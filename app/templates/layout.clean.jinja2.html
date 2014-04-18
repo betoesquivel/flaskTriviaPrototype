@@ -1,0 +1,34 @@
+{% from 'util.jinja2.html' import link_tag, script_tag%}
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>(RQ) {% block title %}{% endblock %}</title>
+
+        {{ link_tag('lib/bootstrap') }}
+        {{ link_tag('lib/bootstrap-responsive') }}
+
+        {% block css %}
+        {% endblock %}
+
+    </head>
+    <body>
+
+        <div class="container">
+            <!-- <bootstrap> -->
+
+
+            {% block body %}
+            {% endblock %}
+
+            <!-- </bootstrap> -->
+        </div>
+
+        {{ script_tag('lib/jquery') }}
+        {{ script_tag('lib/bootstrap') }}
+
+        {% block js %}
+        {% endblock %}
+
+    </body>
+</html>
