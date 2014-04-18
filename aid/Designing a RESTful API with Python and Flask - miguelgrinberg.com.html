@@ -1,0 +1,1036 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<!-- saved from url=(0081)http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+
+	<title>Designing a RESTful API with Python and Flask - miguelgrinberg.com</title>
+
+	<meta name="description" content="miguelgrinberg.com">
+	<meta name="copyright" content="Copyright (c) 2012 Miguel Grinberg">
+	<meta name="author" content="Miguel Grinberg">
+    
+    <meta name="keywords" content="python, programming, REST, RESTful, API, web, service, saas">
+    
+    <link rel="shortcut icon" href="http://blog.miguelgrinberg.com/static/favicon.ico">
+	<link rel="alternate" type="application/rss+xml" href="http://blog.miguelgrinberg.com/feed" title="miguelgrinberg.com RSS feed">
+    <link href="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/prettify.css" type="text/css" rel="stylesheet">
+    <link href="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/colorbox.css" rel="stylesheet" type="text/css">
+    <script src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/cb=gapi.loaded_1" async=""></script><script id="twitter-wjs" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/widgets.js"></script><script src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/cb=gapi.loaded_0" async=""></script><script id="facebook-jssdk" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/all.js"></script><script type="text/javascript" async="" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/ga.js"></script><script type="text/javascript" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/jquery.min.js"></script>
+	<script type="text/javascript" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/jquery.colorbox-min.js"></script>
+    <script type="text/javascript" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/moment.min.js"></script>
+    <script type="text/javascript" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/prettify.js"></script>
+    <link href="http://blog.miguelgrinberg.com/static/bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="http://blog.miguelgrinberg.com/static/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/style.css" rel="stylesheet" type="text/css">
+    <script src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/bootstrap.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css" media="screen, print, projection">
+    </style>
+    
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-4777284-15']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $(".gallery").colorbox({rel:".gallery",maxWidth:"95%",maxHeight:"95%",scalePhotos:true});
+            // add prettyprint class to all <pre><code></code></pre> blocks
+            var prettify = false;
+            $("pre code").parent().each(function() {
+                $(this).addClass('prettyprint');
+                prettify = true;
+            });
+            prettyPrint();
+        });
+    </script>
+<script src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/nonSecureAnonymousFramework"></script><style type="text/css"></style><style type="text/css">* html #li_ui_li_gen_1397704571798_0 a#li_ui_li_gen_1397704571798_0-link{height:1% !important;}#li_ui_li_gen_1397704571798_0{position:relative !important;overflow:visible !important;display:block !important;}#li_ui_li_gen_1397704571798_0 a#li_ui_li_gen_1397704571798_0-link{border:0 !important;height:20px !important;text-decoration:none !important;padding:0 !important;margin:0 !important;display:inline-block !important;}#li_ui_li_gen_1397704571798_0 a#li_ui_li_gen_1397704571798_0-link:link, #li_ui_li_gen_1397704571798_0 a#li_ui_li_gen_1397704571798_0-link:visited, #li_ui_li_gen_1397704571798_0 a#li_ui_li_gen_1397704571798_0-link:hover, #li_ui_li_gen_1397704571798_0 a#li_ui_li_gen_1397704571798_0-link:active{border:0 !important;text-decoration:none !important;}#li_ui_li_gen_1397704571798_0 a#li_ui_li_gen_1397704571798_0-link:after{content:"." !important;display:block !important;clear:both !important;visibility:hidden !important;line-height:0 !important;height:0 !important;}#li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-logo{background-image:url(http://s.c.lnkd.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png) !important;background-position:0px -276px !important;background-repeat:no-repeat !important;background-size:initial !important;cursor:pointer !important;border:0 !important;text-indent:-9999em !important;overflow:hidden !important;padding:0 !important;margin:0 !important;position:absolute !important;left:0px !important;top:0px !important;display:block !important;width:20px !important;height:20px !important;float:right !important;border-radius:0 !important;-webkit-border-radius:0 !important;border-top-right-radius:2px !important;border-bottom-right-radius:2px !important;-webkit-border-top-right-radius:2px !important;-webkit-border-bottom-right-radius:2px !important;}#li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-logo{background-position:-20px -276px !important;}#li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-logo, #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-logo{background-position:-40px -276px !important;}.IN-shadowed #li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-logo{}#li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title{color:#333 !important;cursor:pointer !important;display:block !important;white-space:nowrap !important;float:left !important;margin-left:1px !important;vertical-align:top !important;overflow:hidden !important;text-align:center !important;height:18px !important;padding:0 4px 0 23px !important;border:1px solid #000 !important;border-top-color:#E2E2E2 !important;border-right-color:#BFBFBF !important;border-bottom-color:#B9B9B9 !important;border-left-color:#E2E2E2 !important;border-left:0 !important;text-shadow:#FFFFFF -1px 1px 0 !important;line-height:20px !important;border-radius:0 !important;-webkit-border-radius:0 !important;border-top-right-radius:2px !important;border-bottom-right-radius:2px !important;-webkit-border-top-right-radius:2px !important;-webkit-border-bottom-right-radius:2px !important;background-color:#ECECEC !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#FEFEFE), color-stop(100%,#ECECEC)) !important; background-image: -webkit-linear-gradient(top, #FEFEFE 0%, #ECECEC 100%) !important;}#li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-title{border:1px solid #000 !important;border-top-color:#ABABAB !important;border-right-color:#9A9A9A !important;border-bottom-color:#787878 !important;border-left-color:#04568B !important;border-left:0 !important;background-color:#EDEDED !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#EDEDED), color-stop(100%,#DEDEDE)) !important; background-image: -webkit-linear-gradient(top, #EDEDED 0%, #DEDEDE 100%) !important;}#li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title, #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title{color:#666 !important;border:1px solid #000 !important;border-top-color:#B6B6B6 !important;border-right-color:#B3B3B3 !important;border-bottom-color:#9D9D9D !important;border-left-color:#49627B !important;border-left:0 !important;background-color:#DEDEDE !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#E3E3E3), color-stop(100%,#EDEDED)) !important; background-image: -webkit-linear-gradient(top, #E3E3E3 0%, #EDEDED 100%) !important;}.IN-shadowed #li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title{}.IN-shadowed #li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-title{}.IN-shadowed #li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title, .IN-shadowed #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title{}#li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title-text, #li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title-text *{color:#333 !important;font-size:11px !important;font-family:Arial, sans-serif !important;font-weight:bold !important;font-style:normal !important;-webkit-font-smoothing:antialiased !important;display:inline-block !important;background:transparent none !important;vertical-align:top !important;height:18px !important;line-height:20px !important;float:none !important;}#li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title-text strong{font-weight:bold !important;}#li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title-text em{font-style:italic !important;}#li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-title-text, #li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-title-text *{color:#000 !important;}#li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title-text, #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title-text, #li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title-text *, #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title-text *{color:#666 !important;}#li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title #li_ui_li_gen_1397704571798_0-mark{display:inline-block !important;width:0px !important;overflow:hidden !important;}.success #li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title{color:#333 !important;border-top-color:#E2E2E2 !important;border-right-color:#BFBFBF !important;border-bottom-color:#B9B9B9 !important;border-left-color:#E2E2E2 !important;background-color:#ECECEC !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#FEFEFE), color-stop(100%,#ECECEC)) !important; background-image: -webkit-linear-gradient(top, #FEFEFE 0%, #ECECEC 100%) !important;}.success #li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title-text, .success #li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title-text *{color:#333 !important;}.IN-shadowed .success #li_ui_li_gen_1397704571798_0 #li_ui_li_gen_1397704571798_0-title{}.success #li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-title{color:#000 !important;border-top-color:#ABABAB !important;border-right-color:#9A9A9A !important;border-bottom-color:#787878 !important;border-left-color:#04568B !important;background-color:#EDEDED !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#EDEDED), color-stop(100%,#DEDEDE)) !important; background-image: -webkit-linear-gradient(top, #EDEDED 0%, #DEDEDE 100%) !important;}.success #li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-title-text, .success #li_ui_li_gen_1397704571798_0.hovered #li_ui_li_gen_1397704571798_0-title-text *{color:#000 !important;}.success #li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title, .success #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title{color:#666 !important;border-top-color:#B6B6B6 !important;border-right-color:#B3B3B3 !important;border-bottom-color:#9D9D9D !important;border-left-color:#49627B !important;background-color:#DEDEDE !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#E3E3E3), color-stop(100%,#EDEDED)) !important; background-image: -webkit-linear-gradient(top, #E3E3E3 0%, #EDEDED 100%) !important;}.success #li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title-text, .success #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title-text, .success #li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title-text *, .success #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title-text *{color:#666 !important;}.IN-shadowed .success #li_ui_li_gen_1397704571798_0.clicked #li_ui_li_gen_1397704571798_0-title, .IN-shadowed .success #li_ui_li_gen_1397704571798_0.down #li_ui_li_gen_1397704571798_0-title{}#li_ui_li_gen_1397704571812_1-container.IN-top {display:inline-block !important;overflow:visible !important;position:relative !important;height:42px !important;line-height:1px !important;cursor:pointer !important;}#li_ui_li_gen_1397704571812_1.IN-top {display:inline-block !important;height:42px !important;width:57px !important;text-align:center !important;background-image:url(http://s.c.lnkd.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png) !important;background-color:transparent !important;background-repeat:no-repeat !important;background-position:-150px top !important;}#li_ui_li_gen_1397704571812_1-content.IN-top {display:inline !important;font-size:16px !important;color:#04558B !important;font-weight:bold !important;font-family:Arial, sans-serif !important;line-height:38px !important;}#li_ui_li_gen_1397704571812_1-container.IN-empty #li_ui_li_gen_1397704571812_1-inner.IN-top {background-image:url(http://s.c.lnkd.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png) !important;background-color:transparent !important;background-repeat:no-repeat !important;background-position:0px -20px !important;overflow:hidden !important;margin:5px auto 0 auto !important;width:26px !important;height:26px !important;display:block !important;}#li_ui_li_gen_1397704571812_1-container.IN-empty #li_ui_li_gen_1397704571812_1-content.IN-top {text-indent:-999px !important;display:inline-block !important;}#li_ui_li_gen_1397704571812_1-container.IN-hidden #li_ui_li_gen_1397704571812_1 {display:none !important;}* html #li_ui_li_gen_1397704572814_2 a#li_ui_li_gen_1397704572814_2-link{height:1% !important;}#li_ui_li_gen_1397704572814_2{position:relative !important;overflow:visible !important;display:block !important;}#li_ui_li_gen_1397704572814_2 a#li_ui_li_gen_1397704572814_2-link{border:0 !important;height:20px !important;text-decoration:none !important;padding:0 !important;margin:0 !important;display:inline-block !important;}#li_ui_li_gen_1397704572814_2 a#li_ui_li_gen_1397704572814_2-link:link, #li_ui_li_gen_1397704572814_2 a#li_ui_li_gen_1397704572814_2-link:visited, #li_ui_li_gen_1397704572814_2 a#li_ui_li_gen_1397704572814_2-link:hover, #li_ui_li_gen_1397704572814_2 a#li_ui_li_gen_1397704572814_2-link:active{border:0 !important;text-decoration:none !important;}#li_ui_li_gen_1397704572814_2 a#li_ui_li_gen_1397704572814_2-link:after{content:"." !important;display:block !important;clear:both !important;visibility:hidden !important;line-height:0 !important;height:0 !important;}#li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-logo{background-image:url(http://s.c.lnkd.licdn.com/scds/common/u/images/apps/connect/sprites/sprite_connect_v14.png) !important;background-position:0px -276px !important;background-repeat:no-repeat !important;background-size:initial !important;cursor:pointer !important;border:0 !important;text-indent:-9999em !important;overflow:hidden !important;padding:0 !important;margin:0 !important;position:absolute !important;left:0px !important;top:0px !important;display:block !important;width:20px !important;height:20px !important;float:right !important;border-radius:0 !important;-webkit-border-radius:0 !important;border-top-right-radius:2px !important;border-bottom-right-radius:2px !important;-webkit-border-top-right-radius:2px !important;-webkit-border-bottom-right-radius:2px !important;}#li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-logo{background-position:-20px -276px !important;}#li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-logo, #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-logo{background-position:-40px -276px !important;}.IN-shadowed #li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-logo{}#li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title{color:#333 !important;cursor:pointer !important;display:block !important;white-space:nowrap !important;float:left !important;margin-left:1px !important;vertical-align:top !important;overflow:hidden !important;text-align:center !important;height:18px !important;padding:0 4px 0 23px !important;border:1px solid #000 !important;border-top-color:#E2E2E2 !important;border-right-color:#BFBFBF !important;border-bottom-color:#B9B9B9 !important;border-left-color:#E2E2E2 !important;border-left:0 !important;text-shadow:#FFFFFF -1px 1px 0 !important;line-height:20px !important;border-radius:0 !important;-webkit-border-radius:0 !important;border-top-right-radius:2px !important;border-bottom-right-radius:2px !important;-webkit-border-top-right-radius:2px !important;-webkit-border-bottom-right-radius:2px !important;background-color:#ECECEC !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#FEFEFE), color-stop(100%,#ECECEC)) !important; background-image: -webkit-linear-gradient(top, #FEFEFE 0%, #ECECEC 100%) !important;}#li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-title{border:1px solid #000 !important;border-top-color:#ABABAB !important;border-right-color:#9A9A9A !important;border-bottom-color:#787878 !important;border-left-color:#04568B !important;border-left:0 !important;background-color:#EDEDED !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#EDEDED), color-stop(100%,#DEDEDE)) !important; background-image: -webkit-linear-gradient(top, #EDEDED 0%, #DEDEDE 100%) !important;}#li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title, #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title{color:#666 !important;border:1px solid #000 !important;border-top-color:#B6B6B6 !important;border-right-color:#B3B3B3 !important;border-bottom-color:#9D9D9D !important;border-left-color:#49627B !important;border-left:0 !important;background-color:#DEDEDE !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#E3E3E3), color-stop(100%,#EDEDED)) !important; background-image: -webkit-linear-gradient(top, #E3E3E3 0%, #EDEDED 100%) !important;}.IN-shadowed #li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title{}.IN-shadowed #li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-title{}.IN-shadowed #li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title, .IN-shadowed #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title{}#li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title-text, #li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title-text *{color:#333 !important;font-size:11px !important;font-family:Arial, sans-serif !important;font-weight:bold !important;font-style:normal !important;-webkit-font-smoothing:antialiased !important;display:inline-block !important;background:transparent none !important;vertical-align:top !important;height:18px !important;line-height:20px !important;float:none !important;}#li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title-text strong{font-weight:bold !important;}#li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title-text em{font-style:italic !important;}#li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-title-text, #li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-title-text *{color:#000 !important;}#li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title-text, #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title-text, #li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title-text *, #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title-text *{color:#666 !important;}#li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title #li_ui_li_gen_1397704572814_2-mark{display:inline-block !important;width:0px !important;overflow:hidden !important;}.success #li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title{color:#333 !important;border-top-color:#E2E2E2 !important;border-right-color:#BFBFBF !important;border-bottom-color:#B9B9B9 !important;border-left-color:#E2E2E2 !important;background-color:#ECECEC !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#FEFEFE), color-stop(100%,#ECECEC)) !important; background-image: -webkit-linear-gradient(top, #FEFEFE 0%, #ECECEC 100%) !important;}.success #li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title-text, .success #li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title-text *{color:#333 !important;}.IN-shadowed .success #li_ui_li_gen_1397704572814_2 #li_ui_li_gen_1397704572814_2-title{}.success #li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-title{color:#000 !important;border-top-color:#ABABAB !important;border-right-color:#9A9A9A !important;border-bottom-color:#787878 !important;border-left-color:#04568B !important;background-color:#EDEDED !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#EDEDED), color-stop(100%,#DEDEDE)) !important; background-image: -webkit-linear-gradient(top, #EDEDED 0%, #DEDEDE 100%) !important;}.success #li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-title-text, .success #li_ui_li_gen_1397704572814_2.hovered #li_ui_li_gen_1397704572814_2-title-text *{color:#000 !important;}.success #li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title, .success #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title{color:#666 !important;border-top-color:#B6B6B6 !important;border-right-color:#B3B3B3 !important;border-bottom-color:#9D9D9D !important;border-left-color:#49627B !important;background-color:#DEDEDE !important;background-image:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#E3E3E3), color-stop(100%,#EDEDED)) !important; background-image: -webkit-linear-gradient(top, #E3E3E3 0%, #EDEDED 100%) !important;}.success #li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title-text, .success #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title-text, .success #li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title-text *, .success #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title-text *{color:#666 !important;}.IN-shadowed .success #li_ui_li_gen_1397704572814_2.clicked #li_ui_li_gen_1397704572814_2-title, .IN-shadowed .success #li_ui_li_gen_1397704572814_2.down #li_ui_li_gen_1397704572814_2-title{}</style><script type="text/javascript" charset="UTF-8" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/tCBzJRqneV5tJFCAUdKmLPYTyVH8SN5m5IZzuhnsVzY.js"></script><style id="clearly_highlighting_css" type="text/css">/* selection */ html.clearly_highlighting_enabled ::-moz-selection { background: rgba(246, 238, 150, 0.99); } html.clearly_highlighting_enabled ::selection { background: rgba(246, 238, 150, 0.99); } /* cursor */ html.clearly_highlighting_enabled {    /* cursor and hot-spot position -- requires a default cursor, after the URL one */    cursor: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--cursor.png") 14 16, text; } /* highlight tag */ em.clearly_highlight_element {    font-style: inherit !important; font-weight: inherit !important;    background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--yellow.png");    background-repeat: repeat-x; background-position: top left; background-size: 100% 100%; } /* the delete-buttons are positioned relative to this */ em.clearly_highlight_element.clearly_highlight_first { position: relative; } /* delete buttons */ em.clearly_highlight_element a.clearly_highlight_delete_element {    display: none; cursor: pointer;    padding: 0; margin: 0; line-height: 0;    position: absolute; width: 34px; height: 34px; left: -17px; top: -17px;    background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--delete-sprite.png"); background-repeat: no-repeat; background-position: 0px 0px; } em.clearly_highlight_element a.clearly_highlight_delete_element:hover { background-position: -34px 0px; } /* retina */ @media (min--moz-device-pixel-ratio: 2), (-webkit-min-device-pixel-ratio: 2), (min-device-pixel-ratio: 2) {    em.clearly_highlight_element { background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--yellow@2x.png"); }    em.clearly_highlight_element a.clearly_highlight_delete_element { background-image: url("chrome-extension://pioclpoplcdbaefihamjohnefbikjilc/clearly/images/highlight--delete-sprite@2x.png"); background-size: 68px 34px; } } </style><style type="text/css">.fb_hidden{position:absolute;top:-10000px;z-index:10001}.fb_invisible{display:none}.fb_reset{background:none;border:0;border-spacing:0;color:#000;cursor:auto;direction:ltr;font-family:"lucida grande", tahoma, verdana, arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal}.fb_reset>div{overflow:hidden}.fb_link img{border:none}
+.fb_dialog{background:rgba(82, 82, 82, .7);position:absolute;top:-10000px;z-index:10001}.fb_reset .fb_dialog_legacy{overflow:visible}.fb_dialog_advanced{padding:10px;-moz-border-radius:8px;-webkit-border-radius:8px;border-radius:8px}.fb_dialog_content{background:#fff;color:#333}.fb_dialog_close_icon{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 0 transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif);cursor:pointer;display:block;height:15px;position:absolute;right:18px;top:17px;width:15px}.fb_dialog_mobile .fb_dialog_close_icon{top:5px;left:5px;right:auto}.fb_dialog_padding{background-color:transparent;position:absolute;width:1px;z-index:-1}.fb_dialog_close_icon:hover{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -15px transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_close_icon:active{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yq/r/IE9JII6Z1Ys.png) no-repeat scroll 0 -30px transparent;_background-image:url(http://static.ak.fbcdn.net/rsrc.php/v2/yL/r/s816eWC-2sl.gif)}.fb_dialog_loader{background-color:#f2f2f2;border:1px solid #606060;font-size:24px;padding:20px}.fb_dialog_top_left,.fb_dialog_top_right,.fb_dialog_bottom_left,.fb_dialog_bottom_right{height:10px;width:10px;overflow:hidden;position:absolute}.fb_dialog_top_left{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 0;left:-10px;top:-10px}.fb_dialog_top_right{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -10px;right:-10px;top:-10px}.fb_dialog_bottom_left{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -20px;bottom:-10px;left:-10px}.fb_dialog_bottom_right{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ye/r/8YeTNIlTZjm.png) no-repeat 0 -30px;right:-10px;bottom:-10px}.fb_dialog_vert_left,.fb_dialog_vert_right,.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{position:absolute;background:#525252;filter:alpha(opacity=70);opacity:.7}.fb_dialog_vert_left,.fb_dialog_vert_right{width:10px;height:100%}.fb_dialog_vert_left{margin-left:-10px}.fb_dialog_vert_right{right:0;margin-right:-10px}.fb_dialog_horiz_top,.fb_dialog_horiz_bottom{width:100%;height:10px}.fb_dialog_horiz_top{margin-top:-10px}.fb_dialog_horiz_bottom{bottom:0;margin-bottom:-10px}.fb_dialog_iframe{line-height:0}.fb_dialog_content .dialog_title{background:#6d84b4;border:1px solid #3b5998;color:#fff;font-size:14px;font-weight:bold;margin:0}.fb_dialog_content .dialog_title>span{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/yd/r/Cou7n-nqK52.gif) no-repeat 5px 50%;float:left;padding:5px 0 7px 26px}body.fb_hidden{-webkit-transform:none;height:100%;margin:0;overflow:visible;position:absolute;top:-10000px;left:0;width:100%}.fb_dialog.fb_dialog_mobile.loading{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/ya/r/3rhSv5V8j3o.gif) white no-repeat 50% 50%;min-height:100%;min-width:100%;overflow:hidden;position:absolute;top:0;z-index:10001}.fb_dialog.fb_dialog_mobile.loading.centered{max-height:590px;min-height:590px;max-width:500px;min-width:500px}#fb-root #fb_dialog_ipad_overlay{background:rgba(0, 0, 0, .45);position:absolute;left:0;top:0;width:100%;min-height:100%;z-index:10000}#fb-root #fb_dialog_ipad_overlay.hidden{display:none}.fb_dialog.fb_dialog_mobile.loading iframe{visibility:hidden}.fb_dialog_content .dialog_header{-webkit-box-shadow:white 0 1px 1px -1px inset;background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#738ABA), to(#2C4987));border-bottom:1px solid;border-color:#1d4088;color:#fff;font:14px Helvetica, sans-serif;font-weight:bold;text-overflow:ellipsis;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0;vertical-align:middle;white-space:nowrap}.fb_dialog_content .dialog_header table{-webkit-font-smoothing:subpixel-antialiased;height:43px;width:100%}.fb_dialog_content .dialog_header td.header_left{font-size:12px;padding-left:5px;vertical-align:middle;width:60px}.fb_dialog_content .dialog_header td.header_right{font-size:12px;padding-right:5px;vertical-align:middle;width:60px}.fb_dialog_content .touchable_button{background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#4966A6), color-stop(.5, #355492), to(#2A4887));border:1px solid #29447e;-webkit-background-clip:padding-box;-webkit-border-radius:3px;-webkit-box-shadow:rgba(0, 0, 0, .117188) 0 1px 1px inset, rgba(255, 255, 255, .167969) 0 1px 0;display:inline-block;margin-top:3px;max-width:85px;line-height:18px;padding:4px 12px;position:relative}.fb_dialog_content .dialog_header .touchable_button input{border:none;background:none;color:#fff;font:12px Helvetica, sans-serif;font-weight:bold;margin:2px -12px;padding:2px 6px 3px 6px;text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog_content .dialog_header .header_center{color:#fff;font-size:16px;font-weight:bold;line-height:18px;text-align:center;vertical-align:middle}.fb_dialog_content .dialog_content{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat 50% 50%;border:1px solid #555;border-bottom:0;border-top:0;height:150px}.fb_dialog_content .dialog_footer{background:#f2f2f2;border:1px solid #555;border-top-color:#ccc;height:40px}#fb_dialog_loader_close{float:left}.fb_dialog.fb_dialog_mobile .fb_dialog_close_button{text-shadow:rgba(0, 30, 84, .296875) 0 -1px 0}.fb_dialog.fb_dialog_mobile .fb_dialog_close_icon{visibility:hidden}
+.fb_iframe_widget{display:inline-block;position:relative}.fb_iframe_widget span{display:inline-block;position:relative;text-align:justify}.fb_iframe_widget iframe{position:absolute}.fb_iframe_widget_lift{z-index:1}.fb_hide_iframes iframe{position:relative;left:-10000px}.fb_iframe_widget_loader{position:relative;display:inline-block}.fb_iframe_widget_fluid{display:inline}.fb_iframe_widget_fluid span{width:100%}.fb_iframe_widget_loader iframe{min-height:32px;z-index:2;zoom:1}.fb_iframe_widget_loader .FB_Loader{background:url(http://static.ak.fbcdn.net/rsrc.php/v2/y9/r/jKEcVPZFk-2.gif) no-repeat;height:32px;width:32px;margin-left:-16px;position:absolute;left:50%;z-index:4}
+.fb_connect_bar_container div,.fb_connect_bar_container span,.fb_connect_bar_container a,.fb_connect_bar_container img,.fb_connect_bar_container strong{background:none;border-spacing:0;border:0;direction:ltr;font-style:normal;font-variant:normal;letter-spacing:normal;line-height:1;margin:0;overflow:visible;padding:0;text-align:left;text-decoration:none;text-indent:0;text-shadow:none;text-transform:none;visibility:visible;white-space:normal;word-spacing:normal;vertical-align:baseline}.fb_connect_bar_container{position:fixed;left:0 !important;right:0 !important;height:42px !important;padding:0 25px !important;margin:0 !important;vertical-align:middle !important;border-bottom:1px solid #333 !important;background:#3b5998 !important;z-index:99999999 !important;overflow:hidden !important}.fb_connect_bar_container_ie6{position:absolute;top:expression(document.compatMode=="CSS1Compat"? document.documentElement.scrollTop+"px":body.scrollTop+"px")}.fb_connect_bar{position:relative;margin:auto;height:100%;width:100%;padding:6px 0 0 0 !important;background:none;color:#fff !important;font-family:"lucida grande", tahoma, verdana, arial, sans-serif !important;font-size:13px !important;font-style:normal !important;font-variant:normal !important;font-weight:normal !important;letter-spacing:normal !important;line-height:1 !important;text-decoration:none !important;text-indent:0 !important;text-shadow:none !important;text-transform:none !important;white-space:normal !important;word-spacing:normal !important}.fb_connect_bar a:hover{color:#fff}.fb_connect_bar .fb_profile img{height:30px;width:30px;vertical-align:middle;margin:0 6px 5px 0}.fb_connect_bar div a,.fb_connect_bar span,.fb_connect_bar span a{color:#bac6da;font-size:11px;text-decoration:none}.fb_connect_bar .fb_buttons{float:right;margin-top:7px}
+.fbpluginrecommendationsbarleft,.fbpluginrecommendationsbarright{position:fixed !important;bottom:0;z-index:999}.fbpluginrecommendationsbarleft{left:10px}.fbpluginrecommendationsbarright{right:10px}</style><style type="text/css">.recaptchatable td img{display:block}.recaptchatable .recaptcha_r1_c1{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') 0 -63px no-repeat;width:318px;height:9px}.recaptchatable .recaptcha_r2_c1{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -18px 0 no-repeat;width:9px;height:57px}.recaptchatable .recaptcha_r2_c2{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -27px 0 no-repeat;width:9px;height:57px}.recaptchatable .recaptcha_r3_c1{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') 0 0 no-repeat;width:9px;height:63px}.recaptchatable .recaptcha_r3_c2{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -18px -57px no-repeat;width:300px;height:6px}.recaptchatable .recaptcha_r3_c3{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -9px 0 no-repeat;width:9px;height:63px}.recaptchatable .recaptcha_r4_c1{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -43px 0 no-repeat;width:171px;height:49px}.recaptchatable .recaptcha_r4_c2{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -36px 0 no-repeat;width:7px;height:57px}.recaptchatable .recaptcha_r4_c4{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -214px 0 no-repeat;width:97px;height:57px}.recaptchatable .recaptcha_r7_c1{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -43px -49px no-repeat;width:171px;height:8px}.recaptchatable .recaptcha_r8_c1{background:url('https://www.google.com/recaptcha/api/img/white/sprite.png') -43px -49px no-repeat;width:25px;height:8px}.recaptchatable .recaptcha_image_cell center img{height:57px}.recaptchatable .recaptcha_image_cell center{height:57px}.recaptchatable .recaptcha_image_cell{background-color:white;height:57px}#recaptcha_area,#recaptcha_table{width:318px!important}.recaptchatable,#recaptcha_area tr,#recaptcha_area td,#recaptcha_area th{margin:0!important;border:0!important;padding:0!important;border-collapse:collapse!important;vertical-align:middle!important}.recaptchatable *{margin:0;padding:0;border:0;font-family:helvetica,sans-serif;font-size:8pt;color:black;position:static;top:auto;left:auto;right:auto;bottom:auto}.recaptchatable #recaptcha_image{position:relative;margin:auto}.recaptchatable #recaptcha_image #recaptcha_challenge_image{display:block}.recaptchatable #recaptcha_image #recaptcha_ad_image{display:block;position:absolute;top:0}.recaptchatable img{border:0!important;margin:0!important;padding:0!important}.recaptchatable a,.recaptchatable a:hover{cursor:pointer;outline:none;border:0!important;padding:0!important;text-decoration:none;color:blue;background:none!important;font-weight:normal}.recaptcha_input_area{position:relative!important;width:153px!important;height:45px!important;margin-left:7px!important;margin-right:7px!important;background:none!important}.recaptchatable label.recaptcha_input_area_text{margin:0!important;padding:0!important;position:static!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;background:none!important;height:auto!important;width:auto!important}.recaptcha_theme_red label.recaptcha_input_area_text,.recaptcha_theme_white label.recaptcha_input_area_text{color:black!important}.recaptcha_theme_blackglass label.recaptcha_input_area_text{color:white!important}.recaptchatable #recaptcha_response_field{width:153px!important;position:relative!important;bottom:7px!important;padding:0!important;margin:15px 0 0 0!important;font-size:10pt}.recaptcha_theme_blackglass #recaptcha_response_field,.recaptcha_theme_white #recaptcha_response_field{border:1px solid gray}.recaptcha_theme_red #recaptcha_response_field{border:1px solid #cca940}.recaptcha_audio_cant_hear_link{font-size:7pt;color:black}.recaptchatable{line-height:1!important}#recaptcha_instructions_error{color:red!important}.recaptcha_only_if_privacy{float:right;text-align:right}#recaptcha-ad-choices{position:absolute;height:15px;top:0;right:0}#recaptcha-ad-choices img{height:15px}.recaptcha-ad-choices-collapsed{width:30px;height:15px;display:block}.recaptcha-ad-choices-expanded{width:75px;height:15px;display:none}#recaptcha-ad-choices:hover .recaptcha-ad-choices-collapsed{display:none}#recaptcha-ad-choices:hover .recaptcha-ad-choices-expanded{display:block}
+
+.recaptcha_is_showing_audio .recaptcha_only_if_image,.recaptcha_isnot_showing_audio .recaptcha_only_if_audio,.recaptcha_had_incorrect_sol .recaptcha_only_if_no_incorrect_sol,.recaptcha_nothad_incorrect_sol .recaptcha_only_if_incorrect_sol{display:none !important}</style><style>[touch-action="none"]{ -ms-touch-action: none; touch-action: none; }[touch-action="pan-x"]{ -ms-touch-action: pan-x; touch-action: pan-x; }[touch-action="pan-y"]{ -ms-touch-action: pan-y; touch-action: pan-y; }[touch-action="scroll"],[touch-action="pan-x pan-y"],[touch-action="pan-y pan-x"]{ -ms-touch-action: pan-x pan-y; touch-action: pan-x pan-y; }</style><script type="text/javascript" src="https://www.google.com/recaptcha/api/reload?c=03AHJ_VusspWyipKBdAt3hqw3PKDqKMw8QvIU9wv07vKgYMoX16IAxuGbXqDPLYb5BP83jowdxhGceWx8cHg1o_A_bZE5qKJXq1stNlX1CmvkBzmne6j-ae8J6Ybn0EBY_9LVmi1pBXm764SuAkbEqZ9KjvYPMjXk0aQ55pLTqtW-HdzcbWgwXap7naALm-a0Z56J_SsqSV1Sf&k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S&reason=t&type=image&lang=en&th=,8bD-D_qH6AKC0Lbc9MNVWppYePAAAAAmoAAAABLYALmzeypxG5-jqxLX8olP0lU7oeHJWM__aAQTA3PkFaeT4_fcvgInSuR3gPrR21IE8gXoXDdht2-X8s2ZCI_NigmigbAN0XlFjhFSyavpf1PK0kmdx_4m-kYoBWfGG3yBOBgdbmyOLkMtNbrJooZ2um42R1HB0fk7tPL0rfBaCdLhWwdj0XZLnZNRk9CitPuynfmtSZd0CdyMDGWUUFPTV7UtB4EOh36dVZHFoEN-xQKBikYz9rGBTZTKVQ"></script><script type="text/javascript" src="https://www.google.com/recaptcha/api/reload?c=03AHJ_VuvyK1P1tr-DtnIvJia_oKdoExUx_U_EwG0VLOQ1OmjJqISw9_LtazNrfHVAQ4bz-SiB3SvppiK3ZGsSeCG1EJvhNvzBu7KnFj8ckfnCs4HU2evyWQ5rLzx6pe77SToBQsrdQp0BoGfFQLZ1QhzwL_082EOclBueL1ufO5XnCJGeXOfOtw4nuP8j5dxb-Kd8W1br4xxhZ2EbIp2QJOSgabFqUsHTxg&k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S&reason=t&type=image&lang=en&th=,8bD-D_qH6AKC0Lbc9MNVWppYePAAAAAmoAAAAAvYALmzeypxG5-jqxLX8olP0lU7oeHJWM__aAQTA3PkFaeT4_fcvgInSuR3gPrR21IE8gXoXDdht2-X8s2ZCI_NigmigbAN0XlFjhFSyavpf1PK0kmdx_4m-kYoBWfGG3yBOBgdbmyOLkMtNbrJooZ2um42R1HB0fk7tPL0rfBaCdLhWwdj0XZLnZNRk9CitPuynfmtSZd0CdyMDGWUUFPTV7UtB4EOh36dVZHFoEN-xQqnikYcR_OlN868Cg"></script><script type="text/javascript" src="https://www.google.com/recaptcha/api/reload?c=03AHJ_VuuLhUEG_WFjtrD9IHrktadJ6o8LnkSmvKcWNB8Iag7Prpypcd2fdUy08NpIFr4sH4rOR0qC3DIkizodJmCdTOthiaHijxNGNlGK8GbqvN4egkfrYE_oEtEzowddrTWfqp_hGTWzu-cMDKddiTgOIeb006N7JEJU2pQ2ZKl5rer6fYutZ5UxNmHRWTJFZTpVJEzc8WW0Yo8SfeCN8yWectMcTLrZ_A&k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S&reason=t&type=image&lang=en&th=,8bD-D_qH6AKC0Lbc9MNVWppYePAAAAAmoAAAAAbYALmzeypxG5-jqxLX8olP0lU7oeHJWM__aAQTA3PkFaeT4_fcvgInSuR3gPrR21IE8gXoXDdht2-X8s2ZCI_NigmigbAN0XlFjhFSyavpf1PK0kmdx_4m-kYoBWfGG3yBOBgdbmyOLkMtNbrJooZ2um42R1HB0fk7tPL0rfBaCdLhWwdj0XZLnZNRk9CitPuynfmtSZd0CdyMDGWUUFPTV7UtB4EOh36dVZHFoEN-xRX5ikZm1D-3yYpxTw"></script><script type="text/javascript" src="https://www.google.com/recaptcha/api/reload?c=03AHJ_Vuu4JmG26LmF--lRUK6yv290JbHd6ybTWbqiOxT1CRLAEcCbps2RtvqZzZ6ugCFDWdMoaI1npTsiOxe_gle9bjyrW4OQyQ_J-XtYC-jJ5hlcx1JoZ6LxVA90l-qeRr_25OiY6GtMSwyyr6srPFhuuZSU4xcMsT-pek_GOoN_gpvqx8Zu4QiwihdCmldUxql6dpC4CPXBeHtaXP7D5NzBahrlqfA5xg&k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S&reason=t&type=image&lang=en&th=,8bD-D_qH6AKC0Lbc9MNVWppYePAAAAAmoAAAAA_YALmzeypxG5-jqxLX8olP0lU7oeHJWM__aAQTA3PkFaeT4_fcvgInSuR3gPrR21IE8gXoXDdht2-X8s2ZCI_NigmigbAN0XlFjhFSyavpf1PK0kmdx_4m-kYoBWfGG3yBOBgdbmyOLkMtNbrJooZ2um42R1HB0fk7tPL0rfBaCdLhWwdj0XZLnZNRk9CitPuynfmtSZd0CdyMDGWUUFPTV7UtB4EOh36dVZHFoEN-xRWAikZDJWykbFY-2w"></script><script type="text/javascript" src="https://www.google.com/recaptcha/api/reload?c=03AHJ_Vuujf345uaGgXzzhflf5XOUq8Z6df0EEm_FrY-bF9bhe4x_pY4-FrZMOqR3P-m44WbLHZKFyXdXQ1FQp0CtQo5HvGqaASgT8Fn0F3IR-ptBm152wgaYNqNwgcsU43bQM1Gj85w-bEPy7pR4ebDgkpIZsqm-OjgaJBNrZFkp-Nul_2R_Q_vanKe3oSK2Fzd1qbuF9x41gHuq69AW-XpjHPN8waIAFZw&k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S&reason=t&type=image&lang=en&th=,8bD-D_qH6AKC0Lbc9MNVWppYePAAAAAmoAAAAEbYALmzeypxG5-jqxLX8olP0lU7oeHJWM__aAQTA3PkFaeT4_fcvgInSuR3gPrR21IE8gXoXDdht2-X8s2ZCI_NigmigbAN0XlFjhFSyavpf1PK0kmdx_4m-kYoBWfGG3yBOBgdbmyOLkMtNbrJooZ2um42R1HB0fk7tPL0rfBaCdLhWwdj0XZLnZNRk9CitPuynfmtSZd0CdyMDGWUUFPTV7UtB4EOh36dVZHFoEN-xQjcikatsjYnXrvk7A"></script><script type="text/javascript" src="https://www.google.com/recaptcha/api/reload?c=03AHJ_VusYW3QymwP5gV9XnLe_AmTtFlfTim5azL5gOTMmZJe3OLeRdtj6qj1VylFYthV_4tJOTS2QfgV-rkj9_nFt5rdppXhcJWVAexE9pqIULJHo6g5OibvZI42_YUUg9nN-fsUz9s5i7WfrRlkaCdDdYpv7DmnGkCBS5I3oYkeKaPJ8BocGAcQ7kCerySBT6qd_o0qdbShuO7VVgW2tXQ-dyoUvrkuMPw&k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S&reason=t&type=image&lang=en&th=,8bD-D_qH6AKC0Lbc9MNVWppYePAAAAAmoAAAAAbYALmzeypxG5-jqxLX8olP0lU7oeHJWM__aAQTA3PkFaeT4_fcvgInSuR3gPrR21IE8gXoXDdht2-X8s2ZCI_NigmigbAN0XlFjhFSyavpf1PK0kmdx_4m-kYoBWfGG3yBOBgdbmyOLkMtNbrJooZ2um42R1HB0fk7tPL0rfBaCdLhWwdj0XZLnZNRk9CitPuynfmtSZd0CdyMDGWUUFPTV7UtB4EOh36dVZHFoEN-xRWrika2DvK9IW3XfA"></script><script type="text/javascript" src="https://www.google.com/recaptcha/api/reload?c=03AHJ_VusgBmFarBsg6a3iBHpMIgRuQeot59_XCb8KILgXbrlPrbiOLC0wfr87GN6HorLPs1DfHA4ABn6JhmNDDT8osyblGQNR7XwxVIPq0xYkLn6xUovXMEgDGOiN2VynqHvcpsxN9Er9JMqXT2gGcmnuMU5Asp3q1Fm3TOiCuYwOYNKH2H5FMRyv4R4EYgSWchuKRs1a23EAabWEiVLY0084zzaCvcO00w&k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S&reason=t&type=image&lang=en&th=,8bD-D_qH6AKC0Lbc9MNVWppYePAAAAAmoAAAAAfYALmzeypxG5-jqxLX8olP0lU7oeHJWM__aAQTA3PkFaeT4_fcvgInSuR3gPrR21IE8gXoXDdht2-X8s2ZCI_NigmigbAN0XlFjhFSyavpf1PK0kmdx_4m-kYoBWfGG3yBOBgdbmyOLkMtNbrJooZ2um42R1HB0fk7tPL0rfBaCdLhWwdj0XZLnZNRk9CitPuynfmtSZd0CdyMDGWUUFPTV7UtB4EOh36dVZHFoEN-xQgVikaQnzr0z_dwcQ"></script></head>
+<body style="padding-top: 40px;" data-twttr-rendered="true">
+<!-- facebook sdk -->
+<div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div><iframe name="fb_xdm_frame_http" frameborder="0" allowtransparency="true" scrolling="no" id="fb_xdm_frame_http" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tab-index="-1" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/8n77RrR4jg0.html" style="border: none;"></iframe><iframe name="fb_xdm_frame_https" frameborder="0" allowtransparency="true" scrolling="no" id="fb_xdm_frame_https" aria-hidden="true" title="Facebook Cross Domain Communication Frame" tab-index="-1" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/8n77RrR4jg0(1).html" style="border: none;"></iframe></div></div><div style="position: absolute; top: -10000px; height: 0px; width: 0px;"><div></div></div></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<!-- google plus sdk -->
+<script type="text/javascript" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/plusone.js" gapi_processed="true"></script>
+<!-- twitter sdk -->
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<!-- linkedin sdk -->
+<script src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/in.js" type="text/javascript"></script>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="brand" href="http://blog.miguelgrinberg.com/">miguelgrinberg.com</a>
+            <ul class="nav">
+                <li><a href="http://blog.miguelgrinberg.com/">Home</a></li>
+                <li><a href="http://blog.miguelgrinberg.com/post/about-me">About Me</a></li>
+                <li><a href="http://blog.miguelgrinberg.com/post/about-this-blog">About This Blog</a></li>
+				
+            </ul>
+            <div class="nav pull-right">
+                <p class="navbar-text">
+                    <a type="application/rss+xml" href="http://blog.miguelgrinberg.com/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss.png" alt="RSS Feed" title="RSS Feed"></a>
+                    <a href="https://www.facebook.com/miguelgrinbergblog"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/facebook.png" alt="Facebook" title="Facebook"></a>
+                    <a href="https://plus.google.com/u/0/117786742456929977820"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/googleplus.png" alt="Google+" title="Google+"></a>
+                    <a href="http://www.linkedin.com/in/miguelgrinberg"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/linkedin.png" alt="LinkedIn" title="LinkedIn"></a>
+                    <a href="https://twitter.com/#!/miguelgrinberg"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/twitter.png" alt="Twitter" title="Twitter"></a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="banner"></div>
+<div class="container">
+    <div class="row">
+        <div class="span8">
+            <div id="main">
+                
+                
+                
+                
+                
+
+<div class="post">
+<p class="date">
+<script type="text/javascript">
+document.write(moment("2013-05-20T07:12:40Z").format("LL"));
+</script>May 20 2013
+</p>
+<div class="social-outer">
+    <div class="social">
+        <div class="social-box"><iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/tweet_button.1397165098.html" class="twitter-share-button twitter-tweet-button twitter-count-vertical" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 56px; height: 62px;"></iframe></div>
+        <div class="social-box" style="padding-left: 6px;"><div class="fb-like fb_iframe_widget" data-href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask" data-send="false" data-layout="box_count" data-width="450" data-show-faces="false" data-font="verdana" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=&amp;font=verdana&amp;href=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fdesigning-a-restful-api-with-python-and-flask&amp;layout=box_count&amp;locale=en_US&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=450"><span style="vertical-align: bottom; width: 47px; height: 61px;"><iframe name="f10a5d2538" width="450px" height="1000px" frameborder="0" allowtransparency="true" scrolling="no" title="fb:like Facebook Social Plugin" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/like.html" class="" style="border: none; visibility: visible; width: 47px; height: 61px;"></iframe></span></div></div>
+        <div class="social-box"><div id="___plusone_0" style="text-indent: 0px; margin: 0px; padding: 0px; background-color: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 50px; height: 60px; background-position: initial initial; background-repeat: initial initial;"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 50px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 60px;" tabindex="0" vspace="0" width="100%" id="I0_1397704572897" name="I0_1397704572897" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/fastbutton(1).html" data-gapiattached="true" title="+1"></iframe></div></div>
+        <div class="social-box"><span class="IN-widget" style="line-height: 1; vertical-align: baseline; display: inline-block; text-align: center;"><span style="padding: 0px !important; margin: 0px !important; text-indent: 0px !important; display: inline-block !important; vertical-align: baseline !important; font-size: 1px !important;"><span id="li_ui_li_gen_1397704571812_1-container" class="IN-top"><span id="li_ui_li_gen_1397704571812_1" class="IN-top"><span id="li_ui_li_gen_1397704571812_1-inner" class="IN-top"><span id="li_ui_li_gen_1397704571812_1-content" class="IN-top">6</span></span></span></span></span><br><span style="padding: 0px !important; margin: 0px !important; text-indent: 0px !important; display: inline-block !important; vertical-align: baseline !important; font-size: 1px !important;"><span id="li_ui_li_gen_1397704571798_0"><a id="li_ui_li_gen_1397704571798_0-link" href="javascript:void(0);"><span id="li_ui_li_gen_1397704571798_0-logo">in</span><span id="li_ui_li_gen_1397704571798_0-title"><span id="li_ui_li_gen_1397704571798_0-mark"></span><span id="li_ui_li_gen_1397704571798_0-title-text">Share</span></span></a></span></span></span><script type="IN/Share+init" data-url="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask" data-counter="top"></script></div>
+    </div>
+</div>
+<h1 class="post-title">Designing a RESTful API with Python and Flask</h1>
+<div class="posted">Posted by <span class="label label-important"><a href="http://blog.miguelgrinberg.com/author/Miguel%20Grinberg">Miguel Grinberg</a></span> under <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Python">Python</a></span>, <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Programming">Programming</a></span>, <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/REST">REST</a></span>, <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Flask">Flask</a></span>. </div>
+<div class="post_body"><p>In recent years <a href="https://en.wikipedia.org/wiki/Representational_state_transfer">REST</a> (REpresentational State Transfer) has emerged as the standard architectural design for web services and web APIs.</p>
+<p>In this article I'm going to show you how easy it is to create a RESTful web service using <a href="http://www.python.org/">Python</a> and the <a href="http://flask.pocoo.org/">Flask</a> microframework.</p>
+<h2>What is REST?</h2>
+<p>The characteristics of a REST system are defined by six design rules:</p>
+<ul>
+<li><strong>Client-Server</strong>: There should be a separation between the server that offers a service, and the client that consumes it.</li>
+<li><strong>Stateless</strong>: Each request from a client must contain all the information required by the server to carry out the request. In other words, the server cannot store information provided by the client in one request and use it in another request.</li>
+<li><strong>Cacheable</strong>: The server must indicate to the client if requests can be cached or not.</li>
+<li><strong>Layered System</strong>: Communication between a client and a server should be standardized in such a way that allows intermediaries to respond to requests instead of the end server, without the client having to do anything different.</li>
+<li><strong>Uniform Interface</strong>: The method of communication between a client and a server must be uniform.</li>
+<li><strong>Code on demand</strong>: Servers can provide executable code or scripts for clients to execute in their context. This constraint is the only one that is optional.</li>
+</ul>
+<h2>What is a RESTful web service?</h2>
+<p>The REST architecture was originally designed to fit the <a href="http://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol">HTTP protocol</a> that the world wide web uses.</p>
+<p>Central to the concept of RESTful web services is the notion of resources. Resources are represented by <a href="https://en.wikipedia.org/wiki/Uniform_Resource_Identifier">URIs</a>. The clients send requests to these URIs using the methods defined by the HTTP protocol, and possibly as a result of that the state of the affected resource changes.</p>
+<p>The HTTP request methods are typically designed to affect a given resource in standard ways:</p>
+<table class="data">
+<tbody><tr><th>HTTP Method</th><th>Action</th><th>Examples</th></tr>
+<tr><td>GET</td><td>Obtain information about a resource</td><td>http://example.com/api/orders<br>(retrieve order list)</td></tr>
+<tr><td>GET</td><td>Obtain information about a resource</td><td>http://example.com/api/orders/123<br>(retrieve order #123)</td></tr>
+<tr><td>POST</td><td>Create a new resource</td><td>http://example.com/api/orders<br>(create a new order, from data provided with the request)</td></tr>
+<tr><td>PUT</td><td>Update a resource</td><td>http://example.com/api/orders/123<br>(update order #123, from data provided with the request)</td></tr>
+<tr><td>DELETE</td><td>Delete a resource</td><td>http://example.com/api/orders/123<br>(delete order #123)</td></tr>
+</tbody></table>
+
+<p>The REST design does not require a specific format for the data provided with the requests. In general data is provided in the request body as a <a href="http://en.wikipedia.org/wiki/JSON">JSON</a> blob, or sometimes as arguments in the <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> portion of the URL.</p>
+<h2>Designing a simple web service</h2>
+<p>The task of designing a web service or API that adheres to the REST guidelines then becomes an exercise in identifying the resources that will be exposed and how they will be affected by the different request methods.</p>
+<p>Let's say we want to write a To Do List application and we want to design a web service for it. The first thing to do is to decide what is the root URL to access this service. For example, we could expose this service as:</p>
+<pre class="prettyprint"><code><span class="pln">http</span><span class="pun">:</span><span class="com">//[hostname]/todo/api/v1.0/</span></code></pre>
+<p>Here I have decided to include the name of the application and the version of the API in the URL. Including the application name in the URL is useful to provide a namespace that separates this service from others that can be running on the same system. Including the version in the URL can help with making updates in the future, since new and potentially incompatible functions can be added under a new version, without affecting applications that rely on the older functions.</p>
+<p>The next step is to select the resources that will be exposed by this service. This is an extremely simple application, we only have tasks, so our only resource will be the tasks in our to do list.</p>
+<p>Our tasks resource will use HTTP methods as follows:</p>
+<table class="data">
+<tbody><tr><th>HTTP Method</th><th>URI</th><th>Action</th></tr>
+<tr><td>GET</td><td>http://[hostname]/todo/api/v1.0/tasks</td><td>Retrieve list of tasks</td></tr>
+<tr><td>GET</td><td>http://[hostname]/todo/api/v1.0/tasks/[task_id]</td><td>Retrieve a task</td></tr>
+<tr><td>POST</td><td>http://[hostname]/todo/api/v1.0/tasks</td><td>Create a new task</td></tr>
+<tr><td>PUT</td><td>http://[hostname]/todo/api/v1.0/tasks/[task_id]</td><td>Update an existing task</td></tr>
+<tr><td>DELETE</td><td>http://[hostname]/todo/api/v1.0/tasks/[task_id]</td><td>Delete a task</td></tr>
+</tbody></table>
+
+<p>We can define a task as having the following fields:</p>
+<ul>
+<li><strong>id</strong>: unique identifier for tasks. Numeric type.</li>
+<li><strong>title</strong>: short task description. String type.</li>
+<li><strong>description</strong>: long task description. Text type.</li>
+<li><strong>done</strong>: task completion state. Boolean type.</li>
+</ul>
+<p>And with this we are basically done with the design part of our web service. All that is left is to implement it!</p>
+<h2>A brief introduction to the Flask microframework</h2>
+<p>If you read my <a href="http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world">Flask Mega-Tutorial series</a> you know that Flask is a simple, yet very powerful Python web framework.</p>
+<p>Before we delve into the specifics of web services let's review how a regular Flask web application is structured.</p>
+<p>I will assume you know the basics of working with Python in your platform. The examples I will show below are for a Unix-like operating system. In short, that means that they will work on Linux, Mac OS X and also on Windows if you use <a href="http://www.cygwin.com/">Cygwin</a>. The commands are slightly different if you use the Wndows native version of Python.</p>
+<p>Let's begin by installing Flask in a virtual environment. If you don't have <code>virtualenv</code> installed in your system, you can download it from <a href="https://pypi.python.org/pypi/virtualenv">https://pypi.python.org/pypi/virtualenv</a>.</p>
+<pre class="prettyprint"><code><span class="pln">$ mkdir todo</span><span class="pun">-</span><span class="pln">api
+$ cd todo</span><span class="pun">-</span><span class="pln">api
+$ virtualenv flask
+</span><span class="typ">New</span><span class="pln"> python executable </span><span class="kwd">in</span><span class="pln"> flask</span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">python
+</span><span class="typ">Installing</span><span class="pln"> setuptools</span><span class="pun">............................</span><span class="kwd">done</span><span class="pun">.</span><span class="pln">
+</span><span class="typ">Installing</span><span class="pln"> pip</span><span class="pun">...................</span><span class="kwd">done</span><span class="pun">.</span><span class="pln">
+$ flask</span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">pip install flask</span></code></pre>
+<p>Now that we have Flask installed let's create a simple web application, which we will put in a file called <code>app.py</code>:</p>
+<pre class="prettyprint"><code><span class="com">#!flask/bin/python</span><span class="pln">
+</span><span class="kwd">from</span><span class="pln"> flask </span><span class="kwd">import</span><span class="pln"> </span><span class="typ">Flask</span><span class="pln">
+
+app </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Flask</span><span class="pun">(</span><span class="pln">__name__</span><span class="pun">)</span><span class="pln">
+
+</span><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/'</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> index</span><span class="pun">():</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="str">"Hello, World!"</span><span class="pln">
+
+</span><span class="kwd">if</span><span class="pln"> __name__ </span><span class="pun">==</span><span class="pln"> </span><span class="str">'__main__'</span><span class="pun">:</span><span class="pln">
+    app</span><span class="pun">.</span><span class="pln">run</span><span class="pun">(</span><span class="pln">debug </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">True</span><span class="pun">)</span></code></pre>
+<p>To run this application we have to execute <code>app.py</code>:</p>
+<pre class="prettyprint"><code><span class="pln">$ chmod a</span><span class="pun">+</span><span class="pln">x app</span><span class="pun">.</span><span class="pln">py
+$ </span><span class="pun">./</span><span class="pln">app</span><span class="pun">.</span><span class="pln">py
+ </span><span class="pun">*</span><span class="pln"> </span><span class="typ">Running</span><span class="pln"> on http</span><span class="pun">:</span><span class="com">//127.0.0.1:5000/</span><span class="pln">
+ </span><span class="pun">*</span><span class="pln"> </span><span class="typ">Restarting</span><span class="pln"> </span><span class="kwd">with</span><span class="pln"> reloader</span></code></pre>
+<p>And now you can launch your web browser and type <code>http://localhost:5000</code> to see this tiny application in action.</p>
+<p>Simple, right? Now we will convert this app into our RESTful service!</p>
+<h2>Implementing RESTful services in Python and Flask</h2>
+<p>Building web services with Flask is surprisingly simple, much simpler than building complete server side applications like the one I built in the <a href="http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world">Mega-Tutorial</a>.</p>
+<p>There are a couple of Flask extensions that help with building RESTful services with Flask, but the task is so simple that in my opinion there is no need to use an extension.</p>
+<p>The clients of our web service will be asking the service to add, remove and modify tasks, so clearly we need to have a way to store tasks. The obvious way to do that is to build a small database, but because databases are not the topic of this article we are going to take a much simpler approach. To learn about proper use of databases with Flask once again I recommend that you read my <a href="http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world">Mega-Tutorial</a>.</p>
+<p>In place of a database we will store our task list in a memory structure. This will only work when the web server that runs our application is single process and single threaded. This is okay for Flask's own development web server. It is not okay to use this technique on a production web server, for that a proper database setup must be used.</p>
+<p>Using the base Flask application we are now ready to implement the first entry point of our web service:</p>
+<pre class="prettyprint"><code><span class="com">#!flask/bin/python</span><span class="pln">
+</span><span class="kwd">from</span><span class="pln"> flask </span><span class="kwd">import</span><span class="pln"> </span><span class="typ">Flask</span><span class="pun">,</span><span class="pln"> jsonify
+
+app </span><span class="pun">=</span><span class="pln"> </span><span class="typ">Flask</span><span class="pun">(</span><span class="pln">__name__</span><span class="pun">)</span><span class="pln">
+
+tasks </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">'id'</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">'title'</span><span class="pun">:</span><span class="pln"> u</span><span class="str">'Buy groceries'</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">'description'</span><span class="pun">:</span><span class="pln"> u</span><span class="str">'Milk, Cheese, Pizza, Fruit, Tylenol'</span><span class="pun">,</span><span class="pln"> 
+        </span><span class="str">'done'</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">False</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">'id'</span><span class="pun">:</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">'title'</span><span class="pun">:</span><span class="pln"> u</span><span class="str">'Learn Python'</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">'description'</span><span class="pun">:</span><span class="pln"> u</span><span class="str">'Need to find a good Python tutorial on the web'</span><span class="pun">,</span><span class="pln"> 
+        </span><span class="str">'done'</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">False</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">]</span><span class="pln">
+
+</span><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'GET'</span><span class="pun">])</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> get_tasks</span><span class="pun">():</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'tasks'</span><span class="pun">:</span><span class="pln"> tasks </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span><span class="pln">
+
+</span><span class="kwd">if</span><span class="pln"> __name__ </span><span class="pun">==</span><span class="pln"> </span><span class="str">'__main__'</span><span class="pun">:</span><span class="pln">
+    app</span><span class="pun">.</span><span class="pln">run</span><span class="pun">(</span><span class="pln">debug </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">True</span><span class="pun">)</span></code></pre>
+<p>As you can see, not much has changed. We created a memory database of tasks, which is nothing more than a plain and simple array of dictionaries. Each entry in the array has the fields that we defined above for our tasks.</p>
+<p>Instead of the <code>index</code> entry point we now have a <code>get_tasks</code> function that is associated with the <code>/todo/api/v1.0/tasks</code> URI, and only for the <code>GET</code> HTTP method.</p>
+<p>The response of this function is not text, we are now replying with JSON data, which Flask's <code>jsonify</code> function generates for us from our data structure.</p>
+<p>Using a web browser to test a web service isn't the best idea since web browsers cannot easily generate all types of HTTP requests. Instead, we will use <a href="http://curl.haxx.se/">curl</a>. If you don't have <code>curl</code> installed, go ahead and install it now.</p>
+<p>Start the web service in the same way we started the sample application, by running <code>app.py</code>. Then open a new console window and run the following command:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">200</span><span class="pln"> OK
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">294</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">04</span><span class="pun">:</span><span class="lit">53</span><span class="pun">:</span><span class="lit">53</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"tasks"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Milk, Cheese, Pizza, Fruit, Tylenol"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Buy groceries"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Need to find a good Python tutorial on the web"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Learn Python"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>We just have invoked a function in our RESTful service!</p>
+<p>Now let's write the second version of the GET method for our tasks resource. If you look at the table above this will be the one that is used to return the data of a single task:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask </span><span class="kwd">import</span><span class="pln"> abort
+
+</span><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks/&lt;int:task_id&gt;'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'GET'</span><span class="pun">])</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> get_task</span><span class="pun">(</span><span class="pln">task_id</span><span class="pun">):</span><span class="pln">
+    task </span><span class="pun">=</span><span class="pln"> filter</span><span class="pun">(</span><span class="kwd">lambda</span><span class="pln"> t</span><span class="pun">:</span><span class="pln"> t</span><span class="pun">[</span><span class="str">'id'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> task_id</span><span class="pun">,</span><span class="pln"> tasks</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> len</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">404</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">]</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span></code></pre>
+<p>This second function is a little bit more interesting. Here we get the id of the task in the URL, and Flask translates it into the <code>task_id</code> argument that we receive in the function.</p>
+<p>With this argument we search our <code>tasks</code> array. If the id that we were given does not exist in our database then we return the familiar error code 404, which according to the HTTP specification means "Resource Not Found", which is exactly our case.</p>
+<p>If we find the task then we just package it as JSON with <code>jsonify</code> and send it as a response, just like we did before for the entire collection.</p>
+<p>Here is how this function looks when invoked from <code>curl</code>:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks/2</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">200</span><span class="pln"> OK
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">151</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">05</span><span class="pun">:</span><span class="lit">21</span><span class="pun">:</span><span class="lit">50</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"task"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Need to find a good Python tutorial on the web"</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Learn Python"</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+$ curl </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks/3</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">404</span><span class="pln"> NOT FOUND
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> text</span><span class="pun">/</span><span class="pln">html
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">238</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">05</span><span class="pun">:</span><span class="lit">21</span><span class="pun">:</span><span class="lit">52</span><span class="pln"> GMT
+
+</span><span class="pun">&lt;!</span><span class="pln">DOCTYPE HTML PUBLIC </span><span class="str">"-//W3C//DTD HTML 3.2 Final//EN"</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="str">&lt;title&gt;</span><span class="lit">404</span><span class="pln"> </span><span class="typ">Not</span><span class="pln"> </span><span class="typ">Found</span><span class="pun">&lt;</span><span class="str">/title&gt;
+&lt;h1&gt;Not Found&lt;/</span><span class="pln">h1</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="str">&lt;p&gt;</span><span class="typ">The</span><span class="pln"> requested URL was </span><span class="kwd">not</span><span class="pln"> found on the server</span><span class="pun">.&lt;/</span><span class="pln">p</span><span class="pun">&gt;&lt;</span><span class="pln">p</span><span class="pun">&gt;</span><span class="typ">If</span><span class="pln"> you     entered the URL manually please check your spelling </span><span class="kwd">and</span><span class="pln"> </span><span class="kwd">try</span><span class="pln"> again</span><span class="pun">.&lt;/</span><span class="pln">p</span><span class="pun">&gt;</span></code></pre>
+<p>When we ask for resource id #2 we get it, but when we ask for #3 we get back the 404 error. The odd thing about the error is that it came back with an HTML message instead of JSON, because that is how Flask generates the 404 response by default. Since this is a web service client applications will expect that we always respond with JSON, so we need to improve our 404 error handler:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask </span><span class="kwd">import</span><span class="pln"> make_response
+
+</span><span class="lit">@app</span><span class="pun">.</span><span class="pln">errorhandler</span><span class="pun">(</span><span class="lit">404</span><span class="pun">)</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> not_found</span><span class="pun">(</span><span class="pln">error</span><span class="pun">):</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> make_response</span><span class="pun">(</span><span class="pln">jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'error'</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Not found'</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">),</span><span class="pln"> </span><span class="lit">404</span><span class="pun">)</span></code></pre>
+<p>And we get a much more API friendly error response:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks/3</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">404</span><span class="pln"> NOT FOUND
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">26</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">05</span><span class="pun">:</span><span class="lit">36</span><span class="pun">:</span><span class="lit">54</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"error"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Not found"</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>Next in our list is the <code>POST</code> method, which we will use to insert a new item in our task database:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask </span><span class="kwd">import</span><span class="pln"> request
+
+</span><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'POST'</span><span class="pun">])</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> create_task</span><span class="pun">():</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json </span><span class="kwd">or</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> </span><span class="str">'title'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    task </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+        </span><span class="str">'id'</span><span class="pun">:</span><span class="pln"> tasks</span><span class="pun">[-</span><span class="lit">1</span><span class="pun">][</span><span class="str">'id'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">+</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+        </span><span class="str">'title'</span><span class="pun">:</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">[</span><span class="str">'title'</span><span class="pun">],</span><span class="pln">
+        </span><span class="str">'description'</span><span class="pun">:</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'description'</span><span class="pun">,</span><span class="pln"> </span><span class="str">""</span><span class="pun">),</span><span class="pln">
+        </span><span class="str">'done'</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">False</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+    tasks</span><span class="pun">.</span><span class="pln">append</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> task </span><span class="pun">}</span><span class="pln"> </span><span class="pun">),</span><span class="pln"> </span><span class="lit">201</span></code></pre>
+<p>Adding a new task is also pretty easy. The <code>request.json</code> will have the request data, but only if it came marked as JSON. If the data isn't there, or if it is there, but we are missing a <code>title</code> item then we return an error code 400, which is the code for the bad request.</p>
+<p>We then create a new task dictionary, using the id of the last task plus one (a cheap way to guarantee unique ids in our simple database). We tolerate a missing <code>description</code> field, and we assume the <code>done</code> field will always start set to <code>False</code>.</p>
+<p>We append the new task to our <code>tasks</code> array, and then respond to the client with the added task and send back a status code 201, which HTTP defines as the code for "Created".</p>
+<p>To test this new function we can use the following <code>curl</code> command:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i </span><span class="pun">-</span><span class="pln">H </span><span class="str">"Content-Type: application/json"</span><span class="pln"> </span><span class="pun">-</span><span class="pln">X POST </span><span class="pun">-</span><span class="pln">d </span><span class="str">'{"title":"Read a book"}'</span><span class="pln"> http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">201</span><span class="pln"> </span><span class="typ">Created</span><span class="pln">
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">104</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">05</span><span class="pun">:</span><span class="lit">56</span><span class="pun">:</span><span class="lit">21</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"task"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">{</span><span class="pln">
+    </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">3</span><span class="pun">,</span><span class="pln">
+    </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Read a book"</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>Note: if you are on Windows and use the Cygwin version of <code>curl</code> from <code>bash</code> then the above command will work just fine. However, if you are using the native version of <code>curl</code> from the regular command prompt there is a little dance that needs to be done to send double quotes inside the body of a request:</p>
+<pre class="prettyprint"><code><span class="pln">curl </span><span class="pun">-</span><span class="pln">i </span><span class="pun">-</span><span class="pln">H </span><span class="str">"Content-Type: application/json"</span><span class="pln"> </span><span class="pun">-</span><span class="pln">X POST </span><span class="pun">-</span><span class="pln">d </span><span class="str">"{"""</span><span class="pln">title</span><span class="str">""":"""</span><span class="typ">Read</span><span class="pln"> a book</span><span class="str">"""}"</span><span class="pln"> http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks</span></code></pre>
+<p>Essentially on Windows you have to use double quotes to enclose the body of the request, and then inside it you escape a double quote by writing three of them in sequence.</p>
+<p>Of course after this request completed we can obtain the updated list of tasks:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">200</span><span class="pln"> OK
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">423</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">05</span><span class="pun">:</span><span class="lit">57</span><span class="pun">:</span><span class="lit">44</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"tasks"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Milk, Cheese, Pizza, Fruit, Tylenol"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">1</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Buy groceries"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Need to find a good Python tutorial on the web"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Learn Python"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">""</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">3</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Read a book"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>The remaining two functions of our web service are shown below:</p>
+<pre class="prettyprint"><code><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks/&lt;int:task_id&gt;'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'PUT'</span><span class="pun">])</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> update_task</span><span class="pun">(</span><span class="pln">task_id</span><span class="pun">):</span><span class="pln">
+    task </span><span class="pun">=</span><span class="pln"> filter</span><span class="pun">(</span><span class="kwd">lambda</span><span class="pln"> t</span><span class="pun">:</span><span class="pln"> t</span><span class="pun">[</span><span class="str">'id'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> task_id</span><span class="pun">,</span><span class="pln"> tasks</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> len</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">404</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="str">'title'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json </span><span class="kwd">and</span><span class="pln"> type</span><span class="pun">(</span><span class="pln">request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">[</span><span class="str">'title'</span><span class="pun">])</span><span class="pln"> </span><span class="pun">!=</span><span class="pln"> unicode</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="str">'description'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json </span><span class="kwd">and</span><span class="pln"> type</span><span class="pun">(</span><span class="pln">request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">[</span><span class="str">'description'</span><span class="pun">])</span><span class="pln"> </span><span class="kwd">is</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> unicode</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> </span><span class="str">'done'</span><span class="pln"> </span><span class="kwd">in</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json </span><span class="kwd">and</span><span class="pln"> type</span><span class="pun">(</span><span class="pln">request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">[</span><span class="str">'done'</span><span class="pun">])</span><span class="pln"> </span><span class="kwd">is</span><span class="pln"> </span><span class="kwd">not</span><span class="pln"> </span><span class="kwd">bool</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">400</span><span class="pun">)</span><span class="pln">
+    task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'title'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'title'</span><span class="pun">,</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'title'</span><span class="pun">])</span><span class="pln">
+    task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'description'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'description'</span><span class="pun">,</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'description'</span><span class="pun">])</span><span class="pln">
+    task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'done'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> request</span><span class="pun">.</span><span class="pln">json</span><span class="pun">.</span><span class="kwd">get</span><span class="pun">(</span><span class="str">'done'</span><span class="pun">,</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">][</span><span class="str">'done'</span><span class="pun">])</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'task'</span><span class="pun">:</span><span class="pln"> task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">]</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span><span class="pln">
+
+</span><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks/&lt;int:task_id&gt;'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'DELETE'</span><span class="pun">])</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> delete_task</span><span class="pun">(</span><span class="pln">task_id</span><span class="pun">):</span><span class="pln">
+    task </span><span class="pun">=</span><span class="pln"> filter</span><span class="pun">(</span><span class="kwd">lambda</span><span class="pln"> t</span><span class="pun">:</span><span class="pln"> t</span><span class="pun">[</span><span class="str">'id'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> task_id</span><span class="pun">,</span><span class="pln"> tasks</span><span class="pun">)</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> len</span><span class="pun">(</span><span class="pln">task</span><span class="pun">)</span><span class="pln"> </span><span class="pun">==</span><span class="pln"> </span><span class="lit">0</span><span class="pun">:</span><span class="pln">
+        abort</span><span class="pun">(</span><span class="lit">404</span><span class="pun">)</span><span class="pln">
+    tasks</span><span class="pun">.</span><span class="pln">remove</span><span class="pun">(</span><span class="pln">task</span><span class="pun">[</span><span class="lit">0</span><span class="pun">])</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'result'</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">True</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span></code></pre>
+<p>The <code>delete_task</code> function should have no surprises. For the <code>update_task</code> function we are trying to prevent bugs by doing exhaustive checking of the input arguments. We need to make sure that anything that the client provided us is in the expected format before we incorporate it into our database.</p>
+<p>A function call that updates task #2 as being done would be done as follows:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i </span><span class="pun">-</span><span class="pln">H </span><span class="str">"Content-Type: application/json"</span><span class="pln"> </span><span class="pun">-</span><span class="pln">X PUT </span><span class="pun">-</span><span class="pln">d </span><span class="str">'{"done":true}'</span><span class="pln"> http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks/2</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">200</span><span class="pln"> OK
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">170</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">07</span><span class="pun">:</span><span class="lit">10</span><span class="pun">:</span><span class="lit">16</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"task"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Need to find a good Python tutorial on the web"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">true</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"id"</span><span class="pun">:</span><span class="pln"> </span><span class="lit">2</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Learn Python"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<h2>Improving the web service interface</h2>
+<p>The article was originally published without this section, but a reader suggested a small improvement that I thought is interesting enough to share.</p>
+<p>The problem he observed with my design is that clients are forced to construct URIs from the task identifiers that are returned. This is pretty easy in itself, but it indirectly forces clients to know how these URIs need to be built, and this will prevent us from making changes to URIs in the future.</p>
+<p>Instead of returning task ids we can return the full URI that controls the task. For this we can write a small helper function that generates a "public" version of a task to send to the client:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask </span><span class="kwd">import</span><span class="pln"> url_for
+
+</span><span class="kwd">def</span><span class="pln"> make_public_task</span><span class="pun">(</span><span class="pln">task</span><span class="pun">):</span><span class="pln">
+    new_task </span><span class="pun">=</span><span class="pln"> </span><span class="pun">{}</span><span class="pln">
+    </span><span class="kwd">for</span><span class="pln"> field </span><span class="kwd">in</span><span class="pln"> task</span><span class="pun">:</span><span class="pln">
+        </span><span class="kwd">if</span><span class="pln"> field </span><span class="pun">==</span><span class="pln"> </span><span class="str">'id'</span><span class="pun">:</span><span class="pln">
+            new_task</span><span class="pun">[</span><span class="str">'uri'</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> url_for</span><span class="pun">(</span><span class="str">'get_task'</span><span class="pun">,</span><span class="pln"> task_id </span><span class="pun">=</span><span class="pln"> task</span><span class="pun">[</span><span class="str">'id'</span><span class="pun">],</span><span class="pln"> _external </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">True</span><span class="pun">)</span><span class="pln">
+        </span><span class="kwd">else</span><span class="pun">:</span><span class="pln">
+            new_task</span><span class="pun">[</span><span class="pln">field</span><span class="pun">]</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> task</span><span class="pun">[</span><span class="pln">field</span><span class="pun">]</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> new_task</span></code></pre>
+<p>All we are doing here is taking a task from our database and creating a new task that has all the fields except <code>id</code>, which gets replaced with another field called <code>uri</code>, generated with Flask's <code>url_for</code>.</p>
+<p>When we return the list of tasks we pass them through this function before sending them to the client:</p>
+<pre class="prettyprint"><code><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'GET'</span><span class="pun">])</span><span class="pln">
+</span><span class="kwd">def</span><span class="pln"> get_tasks</span><span class="pun">():</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'tasks'</span><span class="pun">:</span><span class="pln"> map</span><span class="pun">(</span><span class="pln">make_public_task</span><span class="pun">,</span><span class="pln"> tasks</span><span class="pun">)</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span></code></pre>
+<p>So now this is what the client gets when it retrieves the list of tasks:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">200</span><span class="pln"> OK
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">406</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">18</span><span class="pun">:</span><span class="lit">16</span><span class="pun">:</span><span class="lit">28</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"tasks"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Buy groceries"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Milk, Cheese, Pizza, Fruit, Tylenol"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"uri"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"http://localhost:5000/todo/api/v1.0/tasks/1"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Learn Python"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Need to find a good Python tutorial on the web"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"uri"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"http://localhost:5000/todo/api/v1.0/tasks/2"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>We apply this technique to all the other functions and with this we ensure that the client always sees URIs instead of ids.</p>
+<h2>Securing a RESTful web service</h2>
+<p>Can you believe we are done? Well, we are done with the functionality of our service, but we still have a problem. Our service is open to anybody, and that is a bad thing.</p>
+<p>We have a complete web service that can manage our to do list, but the service in its current state is open to any clients. If a stranger figures out how our API works he or she can write a new client that can access our service and mess with our data.</p>
+<p>Most entry level tutorials ignore security and stop here. In my opinion this is a serious problem that should always be addressed.</p>
+<p>The easiest way to secure our web service is to require clients to provide a username and a password. In a regular web application you would have a login form that posts the credentials, and at that point the server would create a session for the logged in user to continue working, with the session id stored in a cookie in the client browser. Unfortunately doing that here would violate the stateless requirement of REST, so instead we have to ask clients to send their authentication information with every request they send to us.</p>
+<p>With REST we always try to adhere to the HTTP protocol as much as we can. Now that we need to implement authentication we should do so in the context of HTTP, which provides two forms of authentication called <a href="http://en.wikipedia.org/wiki/Basic_access_authentication">Basic</a> and <a href="http://en.wikipedia.org/wiki/Digest_access_authentication">Digest</a>.</p>
+<p>There is a small Flask extension that can help with this, written by no other than yours truly. So let's go ahead and install <a href="https://github.com/miguelgrinberg/flask-httpauth">Flask-HTTPAuth</a>:</p>
+<pre class="prettyprint"><code><span class="pln">$ flask</span><span class="pun">/</span><span class="pln">bin</span><span class="pun">/</span><span class="pln">pip install flask</span><span class="pun">-</span><span class="pln">httpauth</span></code></pre>
+<p>Let's say we want our web service to only be accessible to username <code>miguel</code> and password <code>python</code>. We can setup a Basic HTTP authentication as follows:</p>
+<pre class="prettyprint"><code><span class="kwd">from</span><span class="pln"> flask</span><span class="pun">.</span><span class="pln">ext</span><span class="pun">.</span><span class="pln">httpauth </span><span class="kwd">import</span><span class="pln"> </span><span class="typ">HTTPBasicAuth</span><span class="pln">
+auth </span><span class="pun">=</span><span class="pln"> </span><span class="typ">HTTPBasicAuth</span><span class="pun">()</span><span class="pln">
+
+</span><span class="lit">@auth</span><span class="pun">.</span><span class="pln">get_password
+</span><span class="kwd">def</span><span class="pln"> get_password</span><span class="pun">(</span><span class="pln">username</span><span class="pun">):</span><span class="pln">
+    </span><span class="kwd">if</span><span class="pln"> username </span><span class="pun">==</span><span class="pln"> </span><span class="str">'miguel'</span><span class="pun">:</span><span class="pln">
+        </span><span class="kwd">return</span><span class="pln"> </span><span class="str">'python'</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> </span><span class="kwd">None</span><span class="pln">
+
+</span><span class="lit">@auth</span><span class="pun">.</span><span class="pln">error_handler
+</span><span class="kwd">def</span><span class="pln"> unauthorized</span><span class="pun">():</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> make_response</span><span class="pun">(</span><span class="pln">jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'error'</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Unauthorized access'</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">),</span><span class="pln"> </span><span class="lit">401</span><span class="pun">)</span></code></pre>
+<p>The <code>get_password</code> function is a callback function that the extension will use to obtain the password for a given user. In a more complex system this function could check a user database, but in this case we just have a single user so there is no need for that.</p>
+<p>The <code>error_handler</code> callback will be used by the extension when it needs to send the unauthorized error code back to the client. Like we did with other error codes, here we customize the response so that is contains JSON instead of HTML.</p>
+<p>With the authentication system setup, all that is left is to indicate which functions need to be protected, by adding the <code>@auth.login_required</code> decorator. For example:</p>
+<pre class="prettyprint"><code><span class="lit">@app</span><span class="pun">.</span><span class="pln">route</span><span class="pun">(</span><span class="str">'/todo/api/v1.0/tasks'</span><span class="pun">,</span><span class="pln"> methods </span><span class="pun">=</span><span class="pln"> </span><span class="pun">[</span><span class="str">'GET'</span><span class="pun">])</span><span class="pln">
+</span><span class="lit">@auth</span><span class="pun">.</span><span class="pln">login_required
+</span><span class="kwd">def</span><span class="pln"> get_tasks</span><span class="pun">():</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'tasks'</span><span class="pun">:</span><span class="pln"> tasks </span><span class="pun">}</span><span class="pln"> </span><span class="pun">)</span></code></pre>
+<p>If we now try to invoke this function with <code>curl</code> this is what we get:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">401</span><span class="pln"> UNAUTHORIZED
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">36</span><span class="pln">
+WWW</span><span class="pun">-</span><span class="typ">Authenticate</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Basic</span><span class="pln"> realm</span><span class="pun">=</span><span class="str">"Authentication Required"</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">06</span><span class="pun">:</span><span class="lit">41</span><span class="pun">:</span><span class="lit">14</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"error"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Unauthorized access"</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>To be able to invoke this function we have to send our credentials:</p>
+<pre class="prettyprint"><code><span class="pln">$ curl </span><span class="pun">-</span><span class="pln">u miguel</span><span class="pun">:</span><span class="pln">python </span><span class="pun">-</span><span class="pln">i http</span><span class="pun">:</span><span class="com">//localhost:5000/todo/api/v1.0/tasks</span><span class="pln">
+HTTP</span><span class="pun">/</span><span class="lit">1.0</span><span class="pln"> </span><span class="lit">200</span><span class="pln"> OK
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Type</span><span class="pun">:</span><span class="pln"> application</span><span class="pun">/</span><span class="pln">json
+</span><span class="typ">Content</span><span class="pun">-</span><span class="typ">Length</span><span class="pun">:</span><span class="pln"> </span><span class="lit">316</span><span class="pln">
+</span><span class="typ">Server</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Werkzeug</span><span class="pun">/</span><span class="lit">0.8</span><span class="pun">.</span><span class="lit">3</span><span class="pln"> </span><span class="typ">Python</span><span class="pun">/</span><span class="lit">2.7</span><span class="pun">.</span><span class="lit">3</span><span class="pln">
+</span><span class="typ">Date</span><span class="pun">:</span><span class="pln"> </span><span class="typ">Mon</span><span class="pun">,</span><span class="pln"> </span><span class="lit">20</span><span class="pln"> </span><span class="typ">May</span><span class="pln"> </span><span class="lit">2013</span><span class="pln"> </span><span class="lit">06</span><span class="pun">:</span><span class="lit">46</span><span class="pun">:</span><span class="lit">45</span><span class="pln"> GMT
+
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="str">"tasks"</span><span class="pun">:</span><span class="pln"> </span><span class="pun">[</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Buy groceries"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Milk, Cheese, Pizza, Fruit, Tylenol"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"uri"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"http://localhost:5000/todo/api/v1.0/tasks/1"</span><span class="pln">
+    </span><span class="pun">},</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      </span><span class="str">"title"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Learn Python"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"done"</span><span class="pun">:</span><span class="pln"> </span><span class="kwd">false</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"description"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"Need to find a good Python tutorial on the web"</span><span class="pun">,</span><span class="pln">
+      </span><span class="str">"uri"</span><span class="pun">:</span><span class="pln"> </span><span class="str">"http://localhost:5000/todo/api/v1.0/tasks/2"</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">]</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p>The authentication extension gives us the freedom to choose which functions in the service are open and which are protected.</p>
+<p>To ensure the login information is secure the web service should be exposed in a HTTP Secure server (i.e. https://...) as this encrypts all the communications between client and server and prevents a third party from seeing the authentication credentials in transit.</p>
+<p>Unfortunately web browsers have the nasty habit of showing an ugly login dialog box when a request comes back with a 401 error code. This happens even for background requests, so if we were to implement a web browser client with our current web server we would need to jump through hoops to prevent browsers from showing their authentication dialogs and let our client application handle the login.</p>
+<p>A simple trick to distract web browsers is to return an error code other than 401. An alternative error code favored by many is 403, which is the "Forbidden" error. While this is a close enough error, it sort of violates the HTTP standard, so it is not the proper thing to do if full compliance is necessary. In particular this would be a bad idea if the client application is not a web browser. But for cases where server and client are developed together it saves a lot of trouble. The simple change that we can make to implement this trick is to replace the 401 with a 403:</p>
+<pre class="prettyprint"><code><span class="lit">@auth</span><span class="pun">.</span><span class="pln">error_handler
+</span><span class="kwd">def</span><span class="pln"> unauthorized</span><span class="pun">():</span><span class="pln">
+    </span><span class="kwd">return</span><span class="pln"> make_response</span><span class="pun">(</span><span class="pln">jsonify</span><span class="pun">(</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="str">'error'</span><span class="pun">:</span><span class="pln"> </span><span class="str">'Unauthorized access'</span><span class="pln"> </span><span class="pun">}</span><span class="pln"> </span><span class="pun">),</span><span class="pln"> </span><span class="lit">403</span><span class="pun">)</span></code></pre>
+<p>Of course if we do this we will need the client application to look for 403 errors as well.</p>
+<h2>Possible improvements</h2>
+<p>There are a number of ways in which this little web service we have built today can be improved.</p>
+<p>For starters, a real web service should be backed by a real database. The memory data structure that we are using is very limited in functionality and should not be used for a real application.</p>
+<p>Another area in which an improvement could be made is in handling multiple users. If the system supports multiple users the authentication credentials sent by the client could be used to obtain user specific to do lists. In such a system we would have a second resource, which would be the users. A <code>POST</code> request on the users resource would represent a new user registering for the service. A <code>GET</code> request would return user information back to the client. A <code>PUT</code> request would update the user information, maybe updating an email address. A <code>DELETE</code> request would delete the user account.</p>
+<p>The <code>GET</code> request that retrieves the task list could be expanded in a couple of ways. First, this request could take optional pagination arguments, so that a client can request a portion of the list. Another way to make this function more useful would be to allow filtering by certain criteria. For example, a client might want to see only completed tasks, or only tasks with a title that begins with the letter A. All these elements can be added to the URL as arguments.</p>
+<h2>Conclusion</h2>
+<p>The complete code for the To Do List web service is here: <a href="https://gist.github.com/miguelgrinberg/5614326">https://gist.github.com/miguelgrinberg/5614326</a>.</p>
+<p>I hope this was a simple and friendly introduction to RESTful APIs. If there is enough interest I could write a second part to this article in which we can develop a simple web client that uses this service for a complete To Do List application. Let me know what you think below in the comments!</p>
+<p><strong>UPDATE</strong>: A follow up to this tutorial is now online: <a href="http://blog.miguelgrinberg.com/post/writing-a-javascript-rest-client">Writing a Javascript REST client</a>.</p>
+<p><strong>UPDATE #2</strong>: I have written yet another follow-up: <a href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-using-flask-restful">Designing a RESTful API using Flask-RESTful</a>.</p>
+<p>Miguel</p></div>
+<div class="social-mini"><table><tbody><tr>
+    <td><iframe id="twitter-widget-1" scrolling="no" frameborder="0" allowtransparency="true" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/tweet_button.1397165098(1).html" class="twitter-share-button twitter-tweet-button twitter-count-none" title="Twitter Tweet Button" data-twttr-rendered="true" style="width: 56px; height: 20px;"></iframe></td>
+    <td><div id="___plusone_1" style="text-indent: 0px; margin: 0px; padding: 0px; background-color: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; display: inline-block; width: 32px; height: 20px; background-position: initial initial; background-repeat: initial initial;"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: static; top: 0px; width: 32px; margin: 0px; border-style: none; left: 0px; visibility: visible; height: 20px;" tabindex="0" vspace="0" width="100%" id="I1_1397704572917" name="I1_1397704572917" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/fastbutton.html" data-gapiattached="true" title="+1"></iframe></div></td>
+    <td><span class="IN-widget" style="line-height: 1; vertical-align: baseline; display: inline-block; text-align: center;"><span style="padding: 0px !important; margin: 0px !important; text-indent: 0px !important; display: inline-block !important; vertical-align: baseline !important; font-size: 1px !important;"><span id="li_ui_li_gen_1397704572814_2"><a id="li_ui_li_gen_1397704572814_2-link" href="javascript:void(0);"><span id="li_ui_li_gen_1397704572814_2-logo">in</span><span id="li_ui_li_gen_1397704572814_2-title"><span id="li_ui_li_gen_1397704572814_2-mark"></span><span id="li_ui_li_gen_1397704572814_2-title-text">Share</span></span></a></span></span></span><script type="IN/Share+init" data-url="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask"></script></td>
+    <td><div class="fb-like fb_iframe_widget" data-href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask" data-send="false" data-layout="button_count" data-width="100" data-show-faces="false" data-font="verdana" fb-xfbml-state="rendered" fb-iframe-plugin-query="app_id=&amp;font=verdana&amp;href=http%3A%2F%2Fblog.miguelgrinberg.com%2Fpost%2Fdesigning-a-restful-api-with-python-and-flask&amp;layout=button_count&amp;locale=en_US&amp;sdk=joey&amp;send=false&amp;show_faces=false&amp;width=100"><span style="vertical-align: bottom; width: 76px; height: 20px;"><iframe name="f1d679f75c" width="100px" height="1000px" frameborder="0" allowtransparency="true" scrolling="no" title="fb:like Facebook Social Plugin" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/like(1).html" class="" style="border: none; visibility: visible; width: 76px; height: 20px;"></iframe></span></div></td>
+</tr></tbody></table></div>
+
+<h4 style="text-align: right"><a name="comments"></a>57 comments</h4>
+
+
+<div class="comment">
+    <ul>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/d7611e9c5d1b0d11756e1745df041a90"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#1</span> <span class="label label-info">Jason</span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-20T12:37:41Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">Thanks for taking the time to share this. I'm going to go back and read the Mega tutorials before I give this a try. I'm new to Python and not familiar at all with Flask. I'm looking to build off of what I'm learning and this a a great way to do so. Thank again, this is awesome.</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/4b9e888299f2bbb84b996583df056a8c"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#2</span> <span class="label label-info">Michael Tiller</span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-20T16:38:11Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">Overall, I think you've done a nice job putting together this material.  My one beef is that it perpetuates an unfortunately common pattern.  You constantly refer to an 'id' when it would be much better to simply use a URI.  The issue is that any client working with your API will have to know how to construct URLs for requests they want to make.  This is completely unnecessary and brittle.  I'm referring to the so-called "HATEOAS" approach here.  Using that discipline, your ids would be replaced by URIs and your POST methods would return status code 201 (CREATED) and provide the URI of the resource created in the "Location" header.</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/729e26a2a2c7ff24a71958d4aa4e5f35"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#3</span> <span class="label label-important">Miguel Grinberg</span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-20T18:09:36Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">@Michael: I don't fully agree with the self-discovery ideas of HATEOAS. The proposers of this make it sound like a client should be allowed to explore your web service and treat it like a user clicking through links in an HTML would. For an API that is not a good idea, in my opinion. APIs serve a specific purpose and should be documented accordingly. That said, your suggestions are valid ones, preventing the client from having to construct URIs is a good goal, so I'm updating the article to show how you would do that. Thanks!</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/7c82333fd2780751ea696899e486c0e1"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#4</span> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/post/vannen.ws">vannen</a></span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-24T05:50:42Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">Nice tutorial miguel! I use MethodView class from Flask to build my API, in my opinion it is more structured. 
+
+http://flask.pocoo.org/docs/views/#method-based-dispatching</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/0065392a3891a2cb43aa894b951f2242"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#5</span> <span class="label label-info">Evan</span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-28T19:17:57Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">Thanks for another great tutorial. The mega-tutorial got me up and running with flask, and this one is nice as well.  I appreciate the time you put into sharing knowledge. </p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/62b7782b25ffaba0459bdba28f4ec3ae"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#6</span> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/post/about.me/leandro.guerra">Leandro Guerra</a></span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-29T02:36:55Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">Nice tutorial miguel! Could you help me please? Im trying to use the POST method, which we will use to insert a new item in our task database, but I got bach this error: Bad Request The browser(or proxy) sent a request that this server could not understand. I dont know how to fix it.
+
+Thank you a lot.</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/729e26a2a2c7ff24a71958d4aa4e5f35"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#7</span> <span class="label label-important">Miguel Grinberg</span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-29T04:05:41Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">@Leandro: You need to look at your server code and figure out why this POST route returns bad request. It's probably validating your request and finding it is invalid in some way.</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/62b7782b25ffaba0459bdba28f4ec3ae"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#8</span> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/post/about.me/leandro.guerra">Leandro Guerra</a></span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-29T23:16:16Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">Nice Miguel, tks again.</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/fc2d76a688c76b480261f218b673dd28"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#9</span> <span class="label label-info">Brent</span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-30T15:23:53Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">Excellent article! Thanks Miguel</p>
+                </div>
+            </div>
+        </li>
+        
+        <li>
+            <div class="comment-thumbnail"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/f376678465a74e6344b50e4f3242d3ac"></div>
+            <div class="comment-body">
+                <p>
+                    <span class="label">#10</span> <span class="label label-info">JayKim</span> said
+                    <script type="text/javascript">
+                    document.write(moment("2013-05-30T15:38:21Z").fromNow());
+                    </script>11 months ago:
+                </p>
+                <div style="overflow: auto;">
+                    <p style="white-space: pre-wrap;">I am developing REST api that require authorization. I am going to use flask-HTTPAuth with HTTPS. Do I request api call with ID and password for authorization? If I have to save ID and password, it is so dangerous. how can I do? </p>
+                </div>
+            </div>
+        </li>
+        
+    </ul>
+    <!--
+    <table width="100%">
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/d7611e9c5d1b0d11756e1745df041a90?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#1</span> <span class="label label-info">Jason</span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-20T12:37:41Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">Thanks for taking the time to share this. I&#39;m going to go back and read the Mega tutorials before I give this a try. I&#39;m new to Python and not familiar at all with Flask. I&#39;m looking to build off of what I&#39;m learning and this a a great way to do so. Thank again, this is awesome.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/4b9e888299f2bbb84b996583df056a8c?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#2</span> <span class="label label-info">Michael Tiller</span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-20T16:38:11Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">Overall, I think you&#39;ve done a nice job putting together this material.  My one beef is that it perpetuates an unfortunately common pattern.  You constantly refer to an &#39;id&#39; when it would be much better to simply use a URI.  The issue is that any client working with your API will have to know how to construct URLs for requests they want to make.  This is completely unnecessary and brittle.  I&#39;m referring to the so-called &#34;HATEOAS&#34; approach here.  Using that discipline, your ids would be replaced by URIs and your POST methods would return status code 201 (CREATED) and provide the URI of the resource created in the &#34;Location&#34; header.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/729e26a2a2c7ff24a71958d4aa4e5f35?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#3</span> <span class="label label-important">Miguel Grinberg</span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-20T18:09:36Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">@Michael: I don&#39;t fully agree with the self-discovery ideas of HATEOAS. The proposers of this make it sound like a client should be allowed to explore your web service and treat it like a user clicking through links in an HTML would. For an API that is not a good idea, in my opinion. APIs serve a specific purpose and should be documented accordingly. That said, your suggestions are valid ones, preventing the client from having to construct URIs is a good goal, so I&#39;m updating the article to show how you would do that. Thanks!aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/7c82333fd2780751ea696899e486c0e1?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#4</span> <span class="label label-info"><a href="vannen.ws">vannen</a></span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-24T05:50:42Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">Nice tutorial miguel! I use MethodView class from Flask to build my API, in my opinion it is more structured. 
+
+http://flask.pocoo.org/docs/views/#method-based-dispatchingaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/0065392a3891a2cb43aa894b951f2242?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#5</span> <span class="label label-info">Evan</span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-28T19:17:57Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">Thanks for another great tutorial. The mega-tutorial got me up and running with flask, and this one is nice as well.  I appreciate the time you put into sharing knowledge. aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/62b7782b25ffaba0459bdba28f4ec3ae?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#6</span> <span class="label label-info"><a href="about.me/leandro.guerra">Leandro Guerra</a></span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-29T02:36:55Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">Nice tutorial miguel! Could you help me please? Im trying to use the POST method, which we will use to insert a new item in our task database, but I got bach this error: Bad Request The browser(or proxy) sent a request that this server could not understand. I dont know how to fix it.
+
+Thank you a lot.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/729e26a2a2c7ff24a71958d4aa4e5f35?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#7</span> <span class="label label-important">Miguel Grinberg</span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-29T04:05:41Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">@Leandro: You need to look at your server code and figure out why this POST route returns bad request. It&#39;s probably validating your request and finding it is invalid in some way.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/62b7782b25ffaba0459bdba28f4ec3ae?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#8</span> <span class="label label-info"><a href="about.me/leandro.guerra">Leandro Guerra</a></span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-29T23:16:16Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">Nice Miguel, tks again.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/fc2d76a688c76b480261f218b673dd28?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#9</span> <span class="label label-info">Brent</span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-30T15:23:53Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">Excellent article! Thanks Miguelaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    <tr>
+        <td width="60px"><img src="http://gravatar.com/avatar/f376678465a74e6344b50e4f3242d3ac?s=60&d=identicon" /></td>
+        <td>
+            <p>
+                <span class="label">#10</span> <span class="label label-info">JayKim</span> said
+                <script type="text/javascript">
+                document.write(moment("2013-05-30T15:38:21Z").fromNow());
+                </script>:
+            </p>
+            <div style="overflow: auto;">
+                <p style="white-space: pre-wrap;">I am developing REST api that require authorization. I am going to use flask-HTTPAuth with HTTPS. Do I request api call with ID and password for authorization? If I have to save ID and password, it is so dangerous. how can I do? aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</p>
+            </div>
+        </td>
+    </tr>
+    
+    </table>
+    -->
+</div>
+
+<div class="page">
+<ul class="pager">
+  <li class="previous disabled">
+    <a href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask#">««</a>
+  </li>
+  <li class="previous disabled">
+    <a href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask#">«</a>
+  </li>
+  <li class="next">
+    <a href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask/page/0#comments">»»</a>
+  </li>
+  <li class="next">
+    <a href="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask/page/2#comments">»</a>
+  </li>
+</ul>
+</div>
+
+<h3><a name="commentform"></a>Leave a Comment</h3>
+<div class="commentform">
+<form class="form-horizontal" method="post" action="http://blog.miguelgrinberg.com/post/designing-a-restful-api-with-python-and-flask#commentform">
+<div style="display:none;"><input id="csrf_token" name="csrf_token" type="hidden" value="20140417034611##c8acf4085923d486c599f618b62f18c02b6a3716"></div>
+
+<div class="control-group">
+    <label class="control-label" for="name">Name <span class="label label-important">*</span></label>
+    <div class="controls"><input class="span5" id="name" name="name" type="text" value="" style="background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABHklEQVQ4EaVTO26DQBD1ohQWaS2lg9JybZ+AK7hNwx2oIoVf4UPQ0Lj1FdKktevIpel8AKNUkDcWMxpgSaIEaTVv3sx7uztiTdu2s/98DywOw3Dued4Who/M2aIx5lZV1aEsy0+qiwHELyi+Ytl0PQ69SxAxkWIA4RMRTdNsKE59juMcuZd6xIAFeZ6fGCdJ8kY4y7KAuTRNGd7jyEBXsdOPE3a0QGPsniOnnYMO67LgSQN9T41F2QGrQRRFCwyzoIF2qyBuKKbcOgPXdVeY9rMWgNsjf9ccYesJhk3f5dYT1HX9gR0LLQR30TnjkUEcx2uIuS4RnI+aj6sJR0AM8AaumPaM/rRehyWhXqbFAA9kh3/8/NvHxAYGAsZ/il8IalkCLBfNVAAAAABJRU5ErkJggg==); background-attachment: scroll; background-position: 100% 50%; background-repeat: no-repeat no-repeat;"></div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="url">Website</label>
+    <div class="controls"><input class="span5" id="url" name="url" type="text" value=""></div>
+</div>
+<div class="control-group">
+    <label class="control-label" for="email">Email <span class="label label-important">*</span></label>
+    <div class="controls"><input class="span5" id="email" name="email" type="text" value=""></div>
+</div>
+
+<div class="control-group">
+    <label class="control-label" for="comment">Comment <span class="label label-important">*</span></label>
+    <div class="controls"><textarea class="span5" id="comment" name="comment" rows="4"></textarea></div>
+</div>
+
+<div class="control-group">
+    <div class="controls">
+<script type="text/javascript">var RecaptchaOptions = {"theme": "white", "custom_translations": {"incorrect_try_again": "Incorrect. Try again.", "help_btn": "Help", "cant_hear_this": "Download sound as MP3", "instructions_audio": "Type what you hear:", "instructions_visual": "Type the two words:", "refresh_btn": "Get a new challenge", "play_again": "Play sound again", "visual_challenge": "Get a visual challenge", "audio_challenge": "Get an audio challenge"}};</script>
+<script type="text/javascript" src="http://api.recaptcha.net/challenge?k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S"></script><script type="text/javascript" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/recaptcha.js"></script><div id="recaptcha_widget_div" style="" class=" recaptcha_nothad_incorrect_sol recaptcha_isnot_showing_audio"><div id="recaptcha_area"><table id="recaptcha_table" class="recaptchatable recaptcha_theme_white"> <tbody><tr> <td colspan="6" class="recaptcha_r1_c1"></td> </tr> <tr> <td class="recaptcha_r2_c1"></td> <td colspan="4" class="recaptcha_image_cell"><center><div id="recaptcha_image" style="width: 300px; height: 57px;"><img id="recaptcha_challenge_image" alt="reCAPTCHA challenge image" height="57" width="300" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/image"></div></center></td> <td class="recaptcha_r2_c2"></td> </tr> <tr> <td rowspan="6" class="recaptcha_r3_c1"></td> <td colspan="4" class="recaptcha_r3_c2"></td> <td rowspan="6" class="recaptcha_r3_c3"></td> </tr> <tr> <td rowspan="3" class="recaptcha_r4_c1" height="49"> <div class="recaptcha_input_area"> <span id="recaptcha_challenge_field_holder" style="display: none;"><input type="hidden" name="recaptcha_challenge_field" id="recaptcha_challenge_field" value="03AHJ_VusgBmFarBsg6a3iBHpMIgRuQeot59_XCb8KILgXbrlPrbiOLC0wfr87GN6HorLPs1DfHA4ABn6JhmNDDT8osyblGQNR7XwxVIPq0xYkLn6xUovXMEgDGOiN2VynqHvcpsxN9Er9JMqXT2gGcmnuMU5Asp3q1Fm3TOiCuYwOYNKH2H5FMRyv4R4EYgSWchuKRs1a23EAabWEiVLY0084zzaCvcO00w"></span><input name="recaptcha_response_field" id="recaptcha_response_field" type="text" autocorrect="off" autocapitalize="off" placeholder="Type the two words" autocomplete="off"> <span id="recaptcha_privacy" class="recaptcha_only_if_privacy"><a href="http://www.google.com/intl/en/policies/" target="_blank">Privacy &amp; Terms</a></span> </div> </td> <td rowspan="4" class="recaptcha_r4_c2"></td> <td><a id="recaptcha_reload_btn" title="Get a new challenge"><img id="recaptcha_reload" width="25" height="17" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/refresh.gif" alt="Get a new challenge"></a></td> <td rowspan="4" class="recaptcha_r4_c4"></td> </tr> <tr> <td><a id="recaptcha_switch_audio_btn" class="recaptcha_only_if_image" title="Get an audio challenge"><img id="recaptcha_switch_audio" width="25" height="16" alt="Get an audio challenge" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/audio.gif"></a><a id="recaptcha_switch_img_btn" class="recaptcha_only_if_audio" title="Get a visual challenge"><img id="recaptcha_switch_img" width="25" height="16" alt="Get a visual challenge" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/text.gif"></a></td> </tr> <tr> <td><a id="recaptcha_whatsthis_btn" title="Help"><img id="recaptcha_whatsthis" width="25" height="16" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/help.gif" alt="Help"></a></td> </tr> <tr> <td class="recaptcha_r7_c1"></td> <td class="recaptcha_r8_c1"></td> </tr> </tbody></table> </div></div>
+<noscript>
+  &lt;div&gt;&lt;iframe src="http://api.recaptcha.net/noscript?k=6Ld5Zs4SAAAAAOY0DOi4r18bgHlEaz41qAoRf__S" height="300" width="500"&gt;&lt;/iframe&gt;&lt;/div&gt;
+  &lt;div&gt;&lt;textarea name="recaptcha_challenge_field" rows="3" cols="40"&gt;&lt;/textarea&gt;
+  &lt;input type="hidden" name="recaptcha_response_field" value="manual_challenge"&gt;&lt;/div&gt;
+</noscript>
+</div>
+</div>
+
+<div class="control-group">
+    <div class="controls"><input type="submit" name="submit" class="btn btn-primary" value="Post Comment"> <span class="help-inline">Note: all comments are screened before they are published. Thank you for your patience!</span></div>
+</div>
+</form>
+</div>
+
+
+</div>
+
+            </div>
+        </div>
+        <div class="span4">
+            <div id="sidebar">
+                <h1>About Miguel</h1>
+                <img style="float: right; margin: 0px 8px 8px 0px; padding: 4px; border: 1px solid #ccc;" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/miguel.jpg">
+                <p>Welcome to my blog!</p>
+                <p>I'm a software engineer, photographer and filmmaker in Portland, Oregon, USA.</p>
+                <p>You can also find me on <a href="https://www.facebook.com/miguelgrinbergblog">Facebook</a>, <a href="https://plus.google.com/u/0/117786742456929977820">Google+</a>, <a href="http://www.linkedin.com/in/miguelgrinberg">LinkedIn</a> and <a href="https://twitter.com/#!/miguelgrinberg">Twitter</a>.</p>
+                <p>Thank you for visiting!</p>
+                <h1>Flask Web Development Book</h1>
+                <p>I'm currently writing a book on web development with Python and Flask, to be published by O'Reilly Media in 2014. The official site for this book is <a href="http://flaskbook.com/">http://flaskbook.com</a>.</p>
+                <center><a href="http://flaskbook.com/"><img style="border: 1px solid black;" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/flask-book-cover-tiny.png"></a></center>
+                <h1>Flask Tutorial at PyCon 2014</h1>
+                <p>If you want to learn Flask in a class setting then I hope you will consider my upcoming tutorial session at PyCon 2014 in Montréal on April 10th, 2014. Visit the <a href="https://us.pycon.org/2014/schedule/presentation/54/">tutorial page</a> for more information. I hope to see you there!</p>
+                <center><a href="https://us.pycon.org/2014/schedule/presentation/54/"><img src="https://github.com/PyCon/2014/blob/master/assets/logos/pycon2014-blog-image.png?raw=true"></a></center>
+                
+                		<h1>Categories</h1>
+		<ul>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Arduino/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Arduino RSS Feed" label="Arduino RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Arduino">Arduino</a></span> (7)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Blog/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Blog RSS Feed" label="Blog RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Blog">Blog</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/C++/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="C++ RSS Feed" label="C++ RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/C++">C++</a></span> (5)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Cloud/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Cloud RSS Feed" label="Cloud RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Cloud">Cloud</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Filmmaking/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Filmmaking RSS Feed" label="Filmmaking RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Filmmaking">Filmmaking</a></span> (6)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Flask/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Flask RSS Feed" label="Flask RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Flask">Flask</a></span> (28)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Games/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Games RSS Feed" label="Games RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Games">Games</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Gear/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Gear RSS Feed" label="Gear RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Gear">Gear</a></span> (6)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/HTML5/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="HTML5 RSS Feed" label="HTML5 RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/HTML5">HTML5</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Heroku/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Heroku RSS Feed" label="Heroku RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Heroku">Heroku</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Javascript/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Javascript RSS Feed" label="Javascript RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Javascript">Javascript</a></span> (3)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Movie%20Reviews/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Movie Reviews RSS Feed" label="Movie Reviews RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Movie%20Reviews">Movie Reviews</a></span> (5)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Netflix/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Netflix RSS Feed" label="Netflix RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Netflix">Netflix</a></span> (5)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Node.js/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Node.js RSS Feed" label="Node.js RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Node.js">Node.js</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Personal/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Personal RSS Feed" label="Personal RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Personal">Personal</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Photography/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Photography RSS Feed" label="Photography RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Photography">Photography</a></span> (6)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Product%20Reviews/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Product Reviews RSS Feed" label="Product Reviews RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Product%20Reviews">Product Reviews</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Programming/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Programming RSS Feed" label="Programming RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Programming">Programming</a></span> (36)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Project%20Management/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Project Management RSS Feed" label="Project Management RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Project%20Management">Project Management</a></span> (1)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Python/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Python RSS Feed" label="Python RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Python">Python</a></span> (29)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/REST/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="REST RSS Feed" label="REST RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/REST">REST</a></span> (4)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Raspberry%20Pi/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Raspberry Pi RSS Feed" label="Raspberry Pi RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Raspberry%20Pi">Raspberry Pi</a></span> (4)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/RhinoSteady/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="RhinoSteady RSS Feed" label="RhinoSteady RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/RhinoSteady">RhinoSteady</a></span> (6)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Robotics/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Robotics RSS Feed" label="Robotics RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Robotics">Robotics</a></span> (6)</li>
+		
+			<li><a href="http://blog.miguelgrinberg.com/category/Video/feed"><img src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/rss-small.png" title="Video RSS Feed" label="Video RSS Feed"></a> <span class="label label-info"><a href="http://blog.miguelgrinberg.com/category/Video">Video</a></span> (2)</li>
+		
+		</ul>
+
+                
+            </div>
+        </div>
+    </div>
+	<div id="footer">
+        <p class="elapsed">This page was generated in 3.713 seconds.</p>
+		<p>© 2013 by Miguel Grinberg. All rights reserved. <a href="mailto:webmaster _at_ miguelgrinberg _dot_ com">Questions?</a></p>
+	</div>
+</div>
+<div id="wrap">
+</div>
+<div id="cboxOverlay" style="display: none;"></div><div id="colorbox" class="" style="display: none; padding-bottom: 42px; padding-right: 42px;"><div id="cboxWrapper"><div><div id="cboxTopLeft" style="float: left;"></div><div id="cboxTopCenter" style="float: left;"></div><div id="cboxTopRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxMiddleLeft" style="float: left;"></div><div id="cboxContent" style="float: left;"><div id="cboxLoadedContent" style="width: 0px; height: 0px; overflow: hidden; float: left;"></div><div id="cboxLoadingOverlay" style="float: left;"></div><div id="cboxLoadingGraphic" style="float: left;"></div><div id="cboxTitle" style="float: left;"></div><div id="cboxCurrent" style="float: left;"></div><div id="cboxNext" style="float: left;"></div><div id="cboxPrevious" style="float: left;"></div><div id="cboxSlideshow" style="float: left;"></div><div id="cboxClose" style="float: left;"></div></div><div id="cboxMiddleRight" style="float: left;"></div></div><div style="clear: left;"><div id="cboxBottomLeft" style="float: left;"></div><div id="cboxBottomCenter" style="float: left;"></div><div id="cboxBottomRight" style="float: left;"></div></div></div><div style="position: absolute; width: 9999px; visibility: hidden; display: none;"></div></div><iframe src="about:blank" style="height: 0px; width: 0px; visibility: hidden; border: none;">This frame prevents back/forward cache problems in Safari.</iframe><iframe name="oauth2relay708627936" id="oauth2relay708627936" src="./Designing a RESTful API with Python and Flask - miguelgrinberg.com_files/postmessageRelay.html" tabindex="-1" style="width: 1px; height: 1px; position: absolute; top: -100px;"></iframe><script id="hiddenlpsubmitdiv" style="display: none;"></script><script>try{for(var lastpass_iter=0; lastpass_iter < document.forms.length; lastpass_iter++){ var lastpass_f = document.forms[lastpass_iter]; if(typeof(lastpass_f.lpsubmitorig2)=="undefined"){ lastpass_f.lpsubmitorig2 = lastpass_f.submit; lastpass_f.submit = function(){ var form=this; var customEvent = document.createEvent("Event"); customEvent.initEvent("lpCustomEvent", true, true); var d = document.getElementById("hiddenlpsubmitdiv"); if (d) {for(var i = 0; i < document.forms.length; i++){ if(document.forms[i]==form){ d.innerText=i; } } d.dispatchEvent(customEvent); }form.lpsubmitorig2(); } } }}catch(e){}</script></body></html>
