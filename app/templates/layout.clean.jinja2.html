@@ -5,8 +5,11 @@
         <meta charset="utf-8">
         <title>(RQ) {% block title %}{% endblock %}</title>
 
-        {{ link_tag('lib/bootstrap') }}
-        {{ link_tag('lib/bootstrap-responsive') }}
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 
         {% block css %}
         {% endblock %}
@@ -24,11 +27,15 @@
             <!-- </bootstrap> -->
         </div>
 
-        {{ script_tag('lib/jquery') }}
-        {{ script_tag('lib/bootstrap') }}
 
-        {% block js %}
-        {% endblock %}
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script>
+            {% block js %}
+            {% endblock %}
+            {% block jquery %}
+            {% endblock %}
+        </script>
+
 
     </body>
 </html>

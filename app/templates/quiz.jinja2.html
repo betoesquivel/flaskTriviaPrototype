@@ -1,0 +1,186 @@
+{% extends 'layout.clean.jinja2.html' %}
+{% block css %}
+    <style>
+        .btn {
+            display: block; 
+            width: 100%;
+        }
+        .conjunction {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <h1 id="tituloQuiz">Historia</h1>
+    <div id ="congrats"class="alert alert-success hidden">Felicidades, has terminado y obtenido una calificación de 2/3.</div>
+    <div id ="mneh"class="alert alert-success hidden">Sabes lo suficiente, pero puedes saber más. Has obtenido una calificación de 2/3.</div>
+    <div id ="failed"class="alert alert-success hidden">Tendrás que estudiar un poco más. Has obtenido una calificación de 2/3.</div>
+
+     <div class="progress" id="progressBar">
+      <div class="progress-bar progress-bar-primary" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 5%;">
+        <span class="sr-only">60% Complete</span>
+      </div>
+    </div><!--end progressBar-->
+
+    <div class="panel panel-primary" id="quizElement">
+
+        <div class="panel-heading" id="questionBox">
+            <h2 id="question">Cristobal Colón descubrió las Islas Caimán.</h2>
+        </div><!--end of quizElement-->
+
+        <div class="panel-body" id="answerTopContainer">
+
+            <div class="row" id="answers">
+                <span class="col-lg-5 answerBox">
+                    <button class="btn btn-lg btn-default" id="qA1">verdadero</button>
+                </span>
+
+                <span class="text-default col-lg-2"> <h2 class="conjunction"> ó </h2> </span>
+
+                <span class = "col-lg-5 answerBox">
+                    <button class="btn btn-lg btn-default" id="qA2">falso</button>
+                </span>
+            </div>
+
+        </div><!--end of panelBody answertopcontainer -->
+
+        <div class="panel-footer hidden" id="explainedAnswer">
+            <h2 class="text-default" id="explanation">
+                Cristobal Colón descubrió América el 12 de Octubre de 1492.
+                Pensó que había llegado a la India.
+            </h2>
+        </div><!--end of explainedAnswer-->
+
+    </div><!--end of quizElement -->
+{% endblock %}
+
+
+{% block jquery %}
+    // here I have to load all my quiz info from a json
+    // initialize json cycler...
+    var data_json = {{  qdata|tojson  }};
+    console.log(data_json);
+    var qType = "VF";
+    var qNumber = 0;
+
+    $( document ).ready(function() {
+        var quizTitle = $("#tituloQuiz");
+        var cAnswer;
+        var correctAnswered = 0;
+        //select coloring sections
+        var progressBar = $(".progress-bar"); 
+        var questionBox = $("#quizElement"); 
+        var expBox = $("#explainedAnswer"); 
+
+        //select dynamic sections
+        var quizQuestion = $("#question");
+        var answersBox = $("#answers");
+        var exp= $("#explanation"); 
+
+        function paintCorrect(){
+            questionBox.removeClass("panel-primary").addClass("panel-success");
+            progressBar.removeClass("progress-bar-primary").addClass("progress-bar-success"); 
+        }
+        function paintWrong(){
+            questionBox.removeClass("panel-primary").addClass("panel-danger");
+            progressBar.removeClass("progress-bar-primary").addClass("progress-bar-danger"); 
+        }
+        function paintDefault(){
+            questionBox.attr("class", "panel panel-primary");
+            progressBar.attr("class", "progress-bar progress-bar-primary");
+        }
+        function updateProgressBar(){
+            var progressPercent = progressBar.width()/progressBar.parent().width() * 100;
+            progressPercent += 10;
+            progressBar.width(progressPercent + "%");
+        }
+        function showExplanation(){
+            expBox.removeClass("hidden").toggle().slideDown(800); 
+        }
+        function hideExplanation(){
+            expBox.addClass("hidden"); 
+        }
+
+        function showNext(){
+            if(qNumber < data_json.questions.length){
+                //next question
+                quizQuestion.text(data_json.questions[qNumber].question);
+
+                //next answers
+                if (qType === data_json.questions[qNumber].questionType){
+                    var answerBoxes = $(".answerBox"); 
+                    var option1 = $("#qA1");
+                    var option2 = $("#qA2");
+
+                    //style columns for True and False
+                    answerBoxes.attr("class", "col-lg-5 answerBox");
+
+                    //load verdadero and falso
+                    option1.text('verdadero');
+                    option2.text('falso'); 
+                }
+
+                //next explanation
+                exp.text(data_json.questions[qNumber].explanation);
+
+                //refresh everything.
+                quizQuestion.toggle().toggle();
+                answerBoxes.toggle().toggle();
+                option1.toggle().toggle();
+                option2.toggle().toggle();
+                exp.toggle().toggle();
+                hideExplanation();
+                cAnswer = "qA" + ( data_json.questions[qNumber].answer+1 );
+            }else{
+                //congrats... you finished the quiz...
+                //dialog with button to accept score and 
+                //refresh page.
+                console.log($("#progressBar"));
+                console.log($("#quizElement"));
+                console.log(qNumber);
+                //$("#progressBar").toggle().toggle();
+                //$("#quizElement").toggle().toggle();
+
+            }
+        }
+
+        //activate buttons
+        $('.btn').button()
+        showNext();qNumber++;
+        //button click event
+        //update panel footer when a button is clicked
+        $( ".btn" ).click(function() {
+            var clickedButton = $(this);
+            clickedButton.addClass("active"); 
+            updateProgressBar();
+            if (this.id == cAnswer){
+                //paint everything green
+                paintCorrect();
+                correctAnswered++;
+            }else{
+                paintWrong();
+            }
+            showExplanation();
+            //now I should add a delay that displays another question
+            $('.btn').prop('disabled', true);
+            setTimeout(function(){
+                $('.panel').slideUp(800);
+                setTimeout(function(){ 
+                    showNext(); 
+                    if(qNumber < data_json.questions.length){
+                        $('.panel').slideDown(800);
+                        paintDefault();
+                    }else{
+                        $(".alert").removeClass("hidden").toggle().toggle();
+                        $(".panel").toggle().toggle();
+                        $("#progressBar").toggle();
+                    }
+                    clickedButton.removeClass("active");
+                    $('.btn').prop('disabled', false);
+                    qNumber++;
+                }, 1000);
+            }, 3000);
+            //I have to update my question element variables to update the dom
+        });
+    });
+{% endblock %}
