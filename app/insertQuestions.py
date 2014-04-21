@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from pymongo import MongoClient
+import pprint
+MIDB = "rapid-quiz"
 q1 = {
     "question" : "Cristobal Colón descubrió las Islas Caimán.",
     "questionType" : "VF",
@@ -90,6 +93,18 @@ testUser = {
     ]
 }
 
+pp = pprint.PrettyPrinter(indent=4)
 
+#coll = MongoClient()[MIDB]["collQuestions"]
+#coll.insert(q1)
+#coll.insert(q2)
+#coll.insert(q3)
+coll = MongoClient()[MIDB]["collQuizzes"]
+#coll.insert(quiz_data2)
 
-
+q = coll.find_one({'title':'Historia para niños'})
+pp.pprint(q)
+q['results'].append(quizUserResult)
+coll.update({'title':'Historia para niños'},q)
+q = coll.find_one({'title':'Historia para niños'})
+pp.pprint(q)

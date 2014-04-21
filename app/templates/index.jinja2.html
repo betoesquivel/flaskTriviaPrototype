@@ -39,7 +39,12 @@
                     {{q['title']}}
                 </td>
                 <td>
-                    {{q['results'][0]}}
+                    <!-- This works for now, but I should use pymongo to find the results of the user -->
+                    {% for r in q['results']: %}
+                        {% if r['user_id'] == session['user_id']: %}
+                            {{r['bestScore']}}
+                        {% endif %}
+                    {% endfor %}
                 </td>
             </tr>
             {% endfor %}

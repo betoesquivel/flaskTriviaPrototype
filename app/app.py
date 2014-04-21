@@ -45,6 +45,8 @@ def submitQuiz(id):
     if request.method == "POST":
         print "Just being posted..."
         print request.json
+        score = request.json['score']
+        submitResults(id, session['user_id'], score)
     return redirect(url_for('home'))
 
 manager = Manager(app)

@@ -189,8 +189,7 @@
                         $("#progressBar").toggle();
                         //make json to request submit
                         var data = {
-                            id:data_json["id"],
-                            gradeObtained:grade
+                            score:( grade * 100 )
                         };
                         $.ajax({
                             type : "POST",
