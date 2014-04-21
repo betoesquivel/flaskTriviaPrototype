@@ -103,8 +103,13 @@ coll = MongoClient()[MIDB]["collQuizzes"]
 #coll.insert(quiz_data2)
 
 q = coll.find_one({'title':'Historia para niños'})
-pp.pprint(q)
-q['results'].append(quizUserResult)
-coll.update({'title':'Historia para niños'},q)
-q = coll.find_one({'title':'Historia para niños'})
-pp.pprint(q)
+#pp.pprint(q)
+#q['results'].append(quizUserResult)
+#coll.update({'title':'Historia para niños'},q)
+#q = coll.find_one({'title':'Historia para niños'})
+#pp.pprint(q)
+qID = q['_id']
+coll = MongoClient()[MIDB]["collResults"]
+
+quizUserResult['quiz_id'] = qID
+coll.insert(quizUserResult)

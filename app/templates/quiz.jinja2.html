@@ -58,7 +58,7 @@
 {% block jquery %}
     // here I have to load all my quiz info from a json
     // initialize json cycler...
-    var data_json = {{  qdata|tojson  }};
+    var data_json = {{  q|tojson  }};
     console.log(data_json);
     var qType = "VF";
     var qNumber = 0;
@@ -173,7 +173,7 @@
                     var grade = 1.0 * correctAnswered/data_json.questions.length;
                     var score = correctAnswered + "/" + data_json.questions.length; 
                     if (grade > 80){
-                        console.log("Your doing great...");
+                        console.log("You are doing great...");
                         $(".alert-success").text($(".alert-success").text() + score);
                         $(".alert-success").removeClass("hidden").toggle().toggle();
                     }else if (grade > 70){
@@ -191,9 +191,10 @@
                         var data = {
                             score:( grade * 100 )
                         };
+                        console.log(data_json._id['$oid']);
                         $.ajax({
                             type : "POST",
-                            url : "/submitQuiz/"+data_json.id,
+                            url : "/submitQuiz/"+data_json._id['$oid'],
                             data: JSON.stringify(data, null, '\t'),
                             contentType: 'application/json;charset=UTF-8',
                             success: function(result) {
