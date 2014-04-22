@@ -6,6 +6,7 @@ from flask import Flask, render_template, url_for, redirect, request, session
 from rapid import getQuiz, submitResults, getQuizzes, getAnsweredQuizzesResults, getUnansweredQuizzesResults, connectMongoHQ, getUserResults, getQuizzesResults
 
 DEBUG = True
+SECRET_KEY = "my secret"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
