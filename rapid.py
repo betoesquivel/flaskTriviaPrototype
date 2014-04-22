@@ -9,13 +9,13 @@ cResults = "collResults"
 
 MONGO_URL = os.environ.get('MONGOHQ_URL')
 client = MongoClient(MONGO_URL)
-db = client['rapid-quiz']
+db = client['app24410107']
 print "Connected to: ", db.collection_names()
 
 def connectMongoHQ():
     MONGO_URL = os.environ.get('MONGOHQ_URL')
     client = MongoClient(MONGO_URL)
-    db = client['rapid-quiz']
+    db = client['app24410107']
     print "Connected to: ", db.collection_names()
 
 def getQuiz(id):
