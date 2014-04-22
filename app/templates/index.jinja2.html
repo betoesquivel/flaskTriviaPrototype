@@ -1,4 +1,18 @@
 {% extends 'index.layout.jinja2.html' %}
+{% block navbaritems %}
+    {% set navigation_bar = [
+        ('/', 'all', 'Todos'),
+        ('/answered', 'answered', 'Contestados'),
+        ('/unanswered', 'unanswered', 'No Contestados'),
+        ('/instructions', 'instructions', 'Instrucciones')
+    ] -%}
+    {% set active_page = whichActive|default('all') -%}
+    {% for href, id, caption in navigation_bar %}
+        <li{% if id == active_page %} class="active"{% endif%}>
+            <a href="{{ href|e }}">{{ caption|e }}</a>
+        </li>
+    {% endfor %}
+{% endblock navbaritems %}
 {% block content %}
         <table class="table table-responsive table-hover table-striped">
             <thead>
@@ -14,30 +28,25 @@
                     {{q['title']}}
                 </td>
                 <td>
-                    <!-- This works for now, but I should use pymongo to find the results of the user -->
-                    {% for r in q['results']: %}
-                        {% if r['user_id'] == session['user_id']: %}
-                            {{r['bestScore']}}
-                        {% endif %}
-                    {% endfor %}
+                    {{q['result']}}
                 </td>
             </tr>
             {% endfor %}
 
             </tbody>
         </table>
+        {% if whichActive == "instructions" %}
+            <div id ="inst"class="alert alert-info">
+                    {{instructions}}
+            </div>
+        {% endif %}
 {% endblock %}
 
     {% block jquery %}
 
-        {% if whichActive == "all": %}
-            all.addClass("active").toggle().toggle();
-        {% endif %}
-        {% if whichActive == "answered": %}
-            answered.addClass("active").toggle().toggle();
-        {% endif %}
-        {% if "unsanswered" in whichActive: %}
-            unanswered.addClass("active").toggle().toggle();
+        {% if whichActive == "instructions": %}
+            $(".table").slideUp(1000);
+            $("#inst").toggle().slideDown(1000);
         {% endif %}
 
-    {% endblock %}
+    {% endblock jquery %}

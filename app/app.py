@@ -4,7 +4,7 @@ import bson
 from bson.json_util import dumps
 from flask import Flask, render_template, url_for, redirect, request, session
 from flask.ext.script import Manager
-from rapid import getQuiz, submitResults, getQuizzes, getAnsweredQuizzes, getUnansweredQuizzes
+from rapid import getQuiz, submitResults, getQuizzes, getAnsweredQuizzesResults, getUnansweredQuizzesResults, connectMongoHQ, getUserResults, getQuizzesResults
 
 DEBUG = True
 SECRET_KEY = 'top secret'
@@ -16,6 +16,7 @@ app.config.from_object(__name__)
 @app.route('/')
 def index():
     # if user isnt logged in
+    # connectMongoHQ()
     return redirect(url_for('home'))
 
 
@@ -25,9 +26,11 @@ def home():
         session['user_id'] = int(request.form['user_id'])
     elif not session.get('user_id'):
         return redirect(url_for('login'))
-    quizzes = getQuizzes()
+    quizzes = getQuizzesResults(session['user_id'])
+    #results = getUserResults(session['user_id'])
     whichActive = "all"
-    return render_template('index.jinja2.html', quizzes=quizzes, whichActive=whichActive)
+    return render_template('index.jinja2.html', quizzes=quizzes,
+                           whichActive=whichActive)
     # have to make a redirect checking
 
 @app.route('/answered', methods=["GET", "POST"])
@@ -36,9 +39,11 @@ def answered():
         session['user_id'] = int(request.form['user_id'])
     elif not session.get('user_id'):
         return redirect(url_for('login'))
-    quizzes = getAnsweredQuizzes(session['user_id'])
+    quizzes = getAnsweredQuizzesResults(session['user_id'])
+    #results = getUserResults(session['user_id'])
     whichActive = "answered"
-    return render_template('index.jinja2.html', quizzes=quizzes, whichActive=whichActive)
+    return render_template('index.jinja2.html', quizzes=quizzes,
+                           whichActive=whichActive)
     # have to make a redirect checking
 
 @app.route('/unanswered', methods=["GET", "POST"])
@@ -47,11 +52,21 @@ def unanswered():
         session['user_id'] = int(request.form['user_id'])
     elif not session.get('user_id'):
         return redirect(url_for('login'))
-    quizzes = getUnansweredQuizzes(session['user_id'])
-    whichActive = "unsanswered"
+    quizzes = getUnansweredQuizzesResults(session['user_id'])
+    whichActive = "unanswered"
     return render_template('index.jinja2.html', quizzes=quizzes, whichActive=whichActive)
     # have to make a redirect checking
 
+@app.route('/instructions', methods=["GET", "POST"])
+def instructions():
+    if request.method == "POST":
+        session['user_id'] = int(request.form['user_id'])
+    elif not session.get('user_id'):
+        return redirect(url_for('login'))
+    instructions = "JUEGA"
+    whichActive = "instructions"
+    return render_template('index.jinja2.html', instructions=instructions, whichActive=whichActive)
+    # have to make a redirect checking
 
 @app.route('/login')
 def login():

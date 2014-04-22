@@ -170,21 +170,21 @@
                         $('.panel').slideDown(800);
                         paintDefault();
                     }else{
-                    var grade = 1.0 * correctAnswered/data_json.questions.length;
-                    var score = correctAnswered + "/" + data_json.questions.length; 
-                    if (grade > 80){
-                        console.log("You are doing great...");
-                        $(".alert-success").text($(".alert-success").text() + score);
-                        $(".alert-success").removeClass("hidden").toggle().toggle();
-                    }else if (grade > 70){
-                        console.log("Your doing mneh...");
-                        $(".alert-warning").text($(".alert-warning").text() + score);
-                        $(".alert-warning").removeClass("hidden").toggle().toggle();
-                    }else {
-                        console.log("Your doing bad...");
-                        $(".alert-danger").text($(".alert-danger").text() + score);
-                        $(".alert-danger").removeClass("hidden").toggle().toggle();
-                    }
+                        var grade = 1.0 * correctAnswered/data_json.questions.length;
+                        var score = correctAnswered + "/" + data_json.questions.length; 
+                        if (grade >= 80){
+                            console.log("You are doing great...");
+                            $(".alert-success").text($(".alert-success").text() + score);
+                            $(".alert-success").removeClass("hidden").toggle().toggle();
+                        }else if (grade > 70 && grade < 80){
+                            console.log("Your doing mneh...");
+                            $(".alert-warning").text($(".alert-warning").text() + score);
+                            $(".alert-warning").removeClass("hidden").toggle().toggle();
+                        }else {
+                            console.log("Your doing bad...");
+                            $(".alert-danger").text($(".alert-danger").text() + score);
+                            $(".alert-danger").removeClass("hidden").toggle().toggle();
+                        }
                         $(".panel").toggle().toggle();
                         $("#progressBar").toggle();
                         //make json to request submit

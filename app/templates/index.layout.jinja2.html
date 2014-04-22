@@ -14,10 +14,8 @@
                 <a href="#" class="navbar-brand hidden-mid hidden-lg">RQ</a>
             </div>
             <ul class="nav navbar-nav">
-                <li class="" id="all"><a href="/">Todos</a></li>
-                <li class="" id="answered"><a href="/answered">Contestados</a></li>
-                <li class="" id="unanswered"><a href="/unanswered">No Contestados</a></li>
-                <li class=""><a href="/">Submit</a></li>
+                {% block navbaritems %}
+                {% endblock navbaritems %}
             </ul>
             <form class="navbar-search pull-right hidden-xs hidden-small" action="/search">
                 <small><i class="icon-search"></i> Search</small>
@@ -35,9 +33,9 @@
         var all = $("#all");
         var answered = $("#answered");
         var unanswered = $("#unanswered");
-        $("li").attr("class", "");
+        var instructions = $("#instructions");
         {% block jquery %}
-        {% endblock %}
+        {% endblock jquery %}
     });
 
 {% endblock %}

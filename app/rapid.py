@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import session
-from rapidData import quizzes
+import os
 from pymongo import MongoClient
 
 DB = "rapid-quiz"
@@ -8,91 +7,104 @@ cQuestions = "collQuestions"
 cQuizzes = "collQuizzes"
 cResults = "collResults"
 
+MONGO_URL = os.environ.get('MONGOHQ_URL')
+client = MongoClient(MONGO_URL)
+db = client['rapid-quiz']
+print "Connected to: ", db.collection_names()
 
+def connectMongoHQ():
+    MONGO_URL = os.environ.get('MONGOHQ_URL')
+    client = MongoClient(MONGO_URL)
+    db = client['rapid-quiz']
+    print "Connected to: ", db.collection_names()
 
 def getQuiz(id):
-    coll = MongoClient()[DB][cQuizzes]
+    coll = db[cQuizzes]
     print "This is the id", id
     q = coll.find_one({'_id':id})
     print "Got quiz", q['title']
     return q
 
 def getResults(quiz_id, user_id):
-    coll = MongoClient()[DB][cResults]
+    coll = db[cResults]
     r = coll.find_one({'quiz_id':quiz_id, 'user_id':user_id})
     return r
 
+def getUserResults(user_id):
+    coll = db[cResults]
+    r = list( coll.find({'user_id':user_id}) )
+    return r
+
 def getQuizID(quizNo):
-    coll = MongoClient()[DB][cQuizzes]
+    coll = db[cQuizzes]
     q = coll.find_one({'id':quizNo})
     return q['_id']
 
 def submitResults(quizNo, user_id, score):
-    # agrego los resultados a mi json con info del quiz
-    # agrego los resultados al json del usuario
-    # hago algo
-    q = getQuiz(quizNo)
-    if q != None:
-        r = getResults(quizNo, user_id)
+    r = getResults(quizNo, user_id)
+    if r != None:
+        print "Found existing results..."
+        if r['bestScore'] < score:
+            r['bestScore'] = score
+        r['scores'].append(score)
+    else:
+        print "New results..."
+        newR = {}
+        newR['quiz_id'] = quizNo
+        newR['user_id'] = user_id
+        newR['bestScore'] = score
+        newR['scores'] = []
+        newR['scores'].append(score)
+        r = newR
+    coll = db[cResults]
+    print "Modified results: ", r
+    coll.update({'quiz_id':quizNo, 'user_id':user_id}, r, upsert=True)
+
+
+def getQuizzesResults(user_id):
+    qrs = []
+    qs = getQuizzes()
+    for q in qs:
+        qr = {}
+        qr['_id'] = q['_id']
+        qr['title'] = q['title']
+        r = getResults(q['_id'], user_id)
+        qr['result'] = None
         if r != None:
-            print "Found existing results..."
-            rtemp= r
-            if r['bestScore'] < score:
-                r['bestScore'] = score
-            r['scores'].append(score)
-
-            # update the user result in the quiz var
-            for index, item in enumerate(q['results']):
-                if item['user_id'] == user_id :
-                    q['results'][index] = r
-        else:
-            newResult = {
-                "user_id":user_id,
-                "scores":[score],
-                "bestScore":score
-            }
-            r = newResult
-            q['results'].append(r)
-        print "Loaded results to quiz: ", q['results'][len(q['results']) - 1]
-        #update in db
-        coll = MongoClient()[DB][cResults]
-        coll.update({'quiz_id':quizNo, 'user_id':user_id}, r, upsert=True)
-        print "Updated this doc: ", list(coll.find({'quiz_id':quizNo, 'user_id':user_id}))
-        coll = MongoClient()[DB][cQuizzes]
-        coll.update({'_id':quizNo}, q, upsert=True)
-        print "Updated this doc: ", list(coll.find({'_id':quizNo}))
+            qr['result'] = r['bestScore']
+        qrs.append(qr)
+    return qrs
 
 
-def getUnansweredQuizzes(user_id):
-    coll = MongoClient()[DB][cQuizzes]
-    qs = list(coll.find())
-    uaqs = []
+def getUnansweredQuizzesResults(user_id):
+    qrs = []
+    qs = getQuizzes()
     for q in qs:
-        for r in q['results']:
-            if r['user_id'] != user_id:
-                uaqs.append(q)
+        qr = {}
+        r = getResults(q['_id'], user_id)
+        if r == None:
+            qr['_id'] = q['_id']
+            qr['title'] = q['title']
+            qr['result'] = None
+            qrs.append(qr)
+    return qrs
 
-    return uaqs
-
-def getAnsweredQuizzes(user_id):
-    coll = MongoClient()[DB][cQuizzes]
-    qs = list(coll.find())
-    aqs = []
+def getAnsweredQuizzesResults(user_id):
+    qrs = []
+    qs = getQuizzes()
     for q in qs:
-        for r in q['results']:
-            if r['user_id'] == user_id:
-                aqs.append(q)
-    return aqs
+        qr = {}
+        r = getResults(q['_id'], user_id)
+        if r != None:
+            qr['_id'] = q['_id']
+            qr['title'] = q['title']
+            qr['result'] = r['bestScore']
+            qrs.append(qr)
+    return qrs
+
 
 def getQuizzes():
-    coll = MongoClient()[DB][cQuizzes]
+    coll = db[cQuizzes]
     q = list(coll.find())
-    for e in q:
-        print e['title']
-        for r in e['results']:
-            if r['user_id'] == session['user_id']:
-                print "From this user: ", e['results']
-            else:
-                print "Not from this user: ", e['results']
     return q
 
