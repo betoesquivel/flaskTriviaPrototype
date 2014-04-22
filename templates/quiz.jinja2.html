@@ -192,15 +192,18 @@
                             score:( grade * 100 )
                         };
                         console.log(data_json._id['$oid']);
-                        $.ajax({
-                            type : "POST",
-                            url : "/submitQuiz/"+data_json._id['$oid'],
-                            data: JSON.stringify(data, null, '\t'),
-                            contentType: 'application/json;charset=UTF-8',
-                            success: function(result) {
-                                window.location = "/home";
-                            }
-                        });
+                        setTimeout(function(){
+                            $.ajax({
+                                type : "POST",
+                                url : "/submitQuiz/"+data_json._id['$oid'],
+                                data: JSON.stringify(data, null, '\t'),
+                                contentType: 'application/json;charset=UTF-8',
+                                success: function(result) {
+                                    window.location = "/home";
+                                }
+                            });
+
+                        }, 2000);
                     }
                     clickedButton.removeClass("active");
                     $('.btn').prop('disabled', false);
