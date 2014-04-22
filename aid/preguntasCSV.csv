@@ -1,0 +1,71 @@
+id,category,question,questionType,answer,explanation,difficulty
+1,arte,Anna Freud es quien escribió la interpretación de los sueños.,VF,1,Sigmund Freud es quien lo escribió.,2
+2,arte,Watson es el fundador del conductismo.,VF,0,Watson es el fundador del conductismo.,2
+3,arte,Freud habló del inconsciente colectivo.,VF,1,Jung es quien habló del inconsciente colectivo,1
+4,arte,La psicología científica comenzó en 1851.,VF,1,Comenzó en 1879,1
+5,arte,"Aristoteles escribió ""El tratado del alma"".",VF,0,"Aristoteles escribió ""El tratado del alma"".",1
+6,entretenimiento,Superman nació en 1932.,VF,0,Superman nació en 1932.,0
+7,entretenimiento,El plato que más odia Mafalda es el pastel.,VF,1,Es la sopa,0
+8,entretenimiento,Bugs Bunny pertenece a Universal Studios.,VF,1,Pertenece a Warner,0
+9,atre,La profesión de Tintín en reportero.,VF,0,La profesión de Tintín en reportero.,0
+10,arte,Michael Jackson nació en el año 1952.,VF,1,En 1958,1
+11,arte,Ernesto Che Guevara era médico.,VF,0,Ernesto Che Guevara era médico.,2
+12,arte,Juan Pablo II sucedió a Pio XII.,VF,1,A Juan Pablo I,2
+13,entretenimiento,Placido Domingo se gana la vida con la pintura.,VF,1,La música,2
+14,entretenimiento,Google es un metabuscador.,VF,0,Un metabuscador busca en toda la red,1
+15,ciencia,El olfato es el sentido más desarrollado por los animales carnívoros.,VF,0,El olfato es el sentido más desarrollado por los animales carnívoros.,1
+16,entretenimiento,Bill Gates fue el haker más famoso del mundo.,VF,1,Robert Morris,1
+17,historia,"Noé desembarco en ""el monte de los olivos""después del Gran Diluvio.",VF,1,En Ararat,2
+18,historia,"Cristobal Colón murió en Valladolid, España.",VF,0,"Cristobal Colón murió en Valladolid, España.",1
+19,historia,"Los rusos vendieron Alaska a los EEUU por 2,000,000 dólares el acre.",VF,1,20 centavos el acre,1
+20,historia,El primogénito de Luis XIV diseño el Montgolfier.,VF,1,Los hermanos Montgolfier,2
+21,historia,Un zingurat era un templo inca.,VF,1,Un templo mesopotamico,2
+22,historia,La actual Constitución Española se redactó en 1965.,VF,1,En 1978,2
+23,agilidad mental,En Inglaterra no existe el 15 de septiembre.,VF,1,Si existe,0
+24,agilidad mental,Una persona que vivió 50 años tuvo 50 cumpleaños,VF,0,Una persona que vivió 50 años tuvo 50 cumpleaños,0
+25,agilidad mental,"Algunos meses son de 31 días, sólo1 tiene 28 días.",VF,1,Los 12 meses tienen 28 días,0
+26,agilidad mental,"Si un granjero tiene 17 ovejas, todas se mueren, menos 9. Quedan 8.",VF,1,Quedan 9,0
+27,geografia,Montreal es capital de su país,VF,1,Otawa es la capital de Canadá,1
+28,geografia,Addis Abeba es capital de Etiopía,VF,0,Addis Abeba es capital de Etiopía,1
+29,geografia,Jaipur es la capital de Nepal,VF,1,Katmandú es la capital de Nepal,1
+30,geografia,Ginebra es capital de Suiza,VF,1,Berna es la capital de Suiza,1
+31,geografia,"Además del español el ""guaraní"" es lengua oficial en Perú",VF,1,El Quechua,2
+32,geografia,Argentina es el país con mayor porcentaje de población urbana,VF,1,Es Venezuela,2
+33,geografia,Montevideo es la capital de Paraguay,VF,1,Asunción,1
+34,geografia,Cancún es la capital de Quintana Roo,VF,1,Chetumal,1
+35,geografia,El monte Everest se ubica en china y nepal,VF,0,El monte Everest se ubica en china y nepal,1
+36,geografia,"Africa, Asia y Europa tienen costas en el mar mediterráneo",VF,0,"Africa, Asia y Europa tienen costas en el mar mediterráneo",2
+37,geografia,Mar Caribe es donde se ubica Puerto Rico y Rep. dominicana,VF,0,Mar Caribe es donde se ubica Puerto Rico y Rep. dominicana,2
+38,geografia,EL platillo tradicional llamado panucho es de Tabasco,VF,1,Yucatan,2
+39,geografia,Las ruinas de Monte Alaba se encuentran en Oaxaca,VF,0,Las ruinas de Monte Alaba se encuentran en Oaxaca,2
+40,geografia,Copenhagen es la capital de colorado,VF,1,Denver,1
+41,geografia,Los acantilados más famosos de Acapulco donde se avientan clavados reciben el nombre de La Clavada.,VF,1,La quebrada,1
+42,geografia,El municipio de San Cristóbal de las Casas se encuentra en Chiapas.,VF,0,El municipio de San Cristóbal de las Casas se encuentra en Chiapas.,1
+43,arte,"Mateo, Luis, Juan y Pedro escribieron los cuatro evangelios",VF,1,"Mateo, marcos, lucas y juan",2
+44,arte,"Edith Wharton escibio la novela ""La edad de la inociencia""",VF,0,"Edith Wharton escibio la novela ""La edad de la inociencia""",2
+45,arte,La torre más alta de la Sagrada Familia de Gaudí esta dedicada a La Virgen Maria,VF,1,Jesucristo,2
+46,entretenimiento,"Walt Disney escribio la historia de ""Blanca Nieves""",VF,1,Los hermanos Grim,0
+47,entretenimiento,"La actriz Maria Felix nació en Victoria, Tamaulipas",VF,1,"Alamos, Sonora",2
+48,entretenimiento,En la baraja española la sota es el numero 10,VF,0,En la baraja española la sota es el numero 10,2
+49,entretenimiento,Tré Cool es el baterista de coldplay,VF,1,GreenDay,1
+50,entretenimiento,El origen de la galleta llamada pretzel fue en EUA.,VF,1,Alemania,1
+51,historia,El Personaje más importante de la independencia de Méixco fue Porfirio Díaz,VF,1,Miguel Hidalgo,1
+52,historia,Santa Anna fue el presidente mexicano que vendio territorio nacional a EUA,VF,0,Santa Anna fue el presidente mexicano que vendio territorio nacional a EUA,1
+53,historia,La revolución cubana se inició en México,VF,0,La revolución cubana se inició en México,1
+54,historia,Los tratados de cordoba se celebran el 15 de Septiembre,VF,1,24 de Agosto,1
+55,historia,La revolución mexicana se inicio en Queretaro,VF,1,Puebla,0
+56,historia,La consumacion de la independencia fue el 16 de Septiembre de 1821,VF,1,27 de Septiembre 1827,0
+57,historia,Los incas inventaron el quipu,VF,0,Los incas inventaron el quipu,1
+58,historia,El grito de la independencia fue en dolores hidalgo.,VF,0,El grito de la independencia fue en dolores hidalgo.,0
+59,ciencia,Los vasos sanguíneos mas finos son las arterias.,VF,1,Camilares,1
+60,entretenimiento,El primer IPOD fué presentado en 1999,VF,1,2001,1
+61,ciencia,Una mano tiene 27 huesos y 35 musculos,VF,0,Una mano tiene 27 huesos y 35 musculos,2
+62,ciencia,El agua no tiene calorias,VF,0,El agua no tiene calorias,1
+63,ciencia,Un angulo recto mide 180 grados,VF,1,90 grados,1
+64,ciencia,Volt es la unidad de resistencia electrica,VF,1,Ohmio,1
+65,ciencia,El pancreas es el organo mas dañado por el consumo de alcohol excesivo,VF,1,Higado,1
+66,ciencia,La monofobia es el miedo a la soledad.,VF,0,La monofobia es el miedo a la soledad.,2
+67,entretenimiento,El mago de Oz vivia es Ciudad Esmeralda,VF,0,El mago de Oz vivia es Ciudad Esmeralda,0
+68,historia,El emperador moctezuna era de Oaxaca,VF,1,Teotihuacan,1
+69,arte,"Homero es el autor de ""La Iliada""",VF,0,"Homero es el autor de ""La Iliada""",1
+70,historia,Hubo 14 guerras púnicas,VF,1,3,2
