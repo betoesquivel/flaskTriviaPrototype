@@ -77,6 +77,7 @@ def login():
 
 @app.route('/login/<provider_name>/', methods=['GET', 'POST'])
 def loginAuth(provider_name):
+    authomatic = Authomatic(CONFIG, 'secret')
     response = make_response()
     result = authomatic.login(WerkzeugAdapter(request, response), provider_name)
     if result:
