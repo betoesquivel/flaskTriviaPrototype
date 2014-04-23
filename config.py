@@ -7,7 +7,7 @@ CONFIG = {
     'fb': {
 
         'class_': oauth2.Facebook,
-        'short_name': 1,
+        'id':1,
         # Facebook is an AuthorizationProvider too.
         'consumer_key': FBAPPKEY,
         'consumer_secret': FBAPPSECRET,
