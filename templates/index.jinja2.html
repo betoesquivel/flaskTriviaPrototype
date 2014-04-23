@@ -37,7 +37,22 @@
         </table>
         {% if whichActive == "instructions" %}
             <div id ="inst" class="alert alert-info">
-                    {{instructions}}
+                <h2>Instrucciones</h2>
+                <p>
+                1.    Haz click en el botón de "Todos". Ahí aparecerán los 7 quizzes que puedes contestar. Selecciona el de tu preferencia
+                </p>
+                <p>
+                2.    Contesta correctamente si es verdadero o falso. Si la respuesta es correcta la pregunta se tornará en verde, si es incorrecta se tornará rojo.
+                </p>
+                <p>
+                3.    Al finalizar el quiz del tema aparecerá tu calificación.
+                </p>
+                <p>
+                4.    Puedes presentar los quizzes las veces que quieras. Tu calificación se guardará en la base de datos con tu ID.
+                </p>
+                <p>
+                5.    Comienza a medir tu cultura.
+                </p>
             </div>
         {% endif %}
 {% endblock %}
@@ -46,7 +61,7 @@
 
         {% if whichActive == "instructions": %}
             $(".table").slideUp(1000);
-            $("#inst").toggle().slideDown(1000);
+            $("#inst").slideDown(1000);
         {% endif %}
 
     {% endblock jquery %}
