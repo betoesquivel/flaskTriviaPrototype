@@ -58,10 +58,11 @@
 {% endblock %}
 
     {% block jquery %}
+        instructions.toggle();
 
         {% if whichActive == "instructions": %}
-            $(".table").slideUp(1000);
-            $("#inst").slideDown(1000);
+            $(".table").slideUp(800);
+            $("#inst").delay(1000).slideDown(1000);
         {% endif %}
 
     {% endblock jquery %}
