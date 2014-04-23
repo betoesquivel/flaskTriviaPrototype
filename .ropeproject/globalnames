@@ -1,8 +1,8 @@
-€}q(Uapp]q(UappqUhomeqU
-SECRET_KEYqUindexqUansweredqU
-unansweredqUquizq	U
-submitQuizq
-UinstructionsqUDEBUGqUloginqeUrapid]q(UgetQuizzesResultsqUgetUserResultsqU
-getResultsqU
-getQuizzesqU
-cQuestionsqUdbqUDBqUclientqUgetQuizqU	getQuizIDqUcResultsqUgetUnansweredQuizzesResultsqUconnectMongoHQqUgetAnsweredQuizzesResultsqUcQuizzesqU	MONGO_URLqUsubmitResultsqeUcreateQuizzes]q (Uppq!Udbq"Uquizq#Ucollq$Uclientq%U	questionsq&U	MONGO_URLq'eu.
+€}q(Uapp]q(U	loginAuthqUappqUhomeqU
+SECRET_KEYqUindexqUansweredqU
+unansweredq	Uquizq
+U
+submitQuizqUinstructionsqUDEBUGqUloginqeUrapid]q(UgetQuizzesResultsqUgetUserResultsqU
+getResultsqU
+getQuizzesqU
+cQuestionsqUdbqUDBqUclientqUgetQuizqU	getQuizIDqUcResultsqUgetUnansweredQuizzesResultsqUconnectMongoHQqUgetAnsweredQuizzesResultsqUcQuizzesqU	MONGO_URLqUsubmitResultsq eUconfig]q!(UCONFIGq"UFBAPPSECRETq#UFBAPPKEYq$eUcreateQuizzes]q%(Uppq&Udbq'Uquizq(Ucollq)Uclientq*U	questionsq+U	MONGO_URLq,eu.

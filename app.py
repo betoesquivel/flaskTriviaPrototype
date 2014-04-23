@@ -2,8 +2,12 @@
 import json
 import bson
 from bson.json_util import dumps
-from flask import Flask, render_template, url_for, redirect, request, session
+from flask import Flask, render_template, url_for, redirect, request, session, make_response
 from rapid import getQuiz, submitResults, getQuizzes, getAnsweredQuizzesResults, getUnansweredQuizzesResults, connectMongoHQ, getUserResults, getQuizzesResults
+from authomatic.adapters import WerkzeugAdapter
+from authomatic import Authomatic
+
+from config import CONFIG
 
 DEBUG = True
 SECRET_KEY = "my secret"
@@ -71,6 +75,19 @@ def instructions():
 def login():
     return render_template('login.jinja2.html')
 
+@app.route('/login/<provider_name>/', methods=['GET', 'POST'])
+def loginAuth(provider_name):
+    response = make_response()
+    result = authomatic.login(WerkzeugAdapter(request, response), provider_name)
+    if result:
+        if result.user:
+            result.user.update()
+            usr = result.user.to_dict()
+            session['user_id'] = usr['id']
+            print "This is the fb id: ", usr['id']
+            return redirect(url_for('home'))
+        return redirect(url_for('login'))
+    return response
 
 @app.route('/quiz/<id>')
 def quiz(id):
