@@ -23,7 +23,7 @@
             </thead>
             <tbody>
             {%for q in quizzes:%}
-            <tr onclick="document.location = '/quiz/{{q['_id']}}'">
+            <tr onclick="document.location = '/quiz/{{q['_id']}}'" style="cursor:pointer; cursor:hand;">
                 <td>
                     {{q['title']}}
                 </td>
